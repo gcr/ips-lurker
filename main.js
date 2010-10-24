@@ -21,7 +21,13 @@ function getLoginCredentials(cb) {
 }
 
 getLoginCredentials(function(user, pass){
-    ipschat.ipsChatLogin('http://board.iamlights.com/', user, pass, console.log);
+    console.log("Logging in...");
+    ipschat.ipsLogin('http://board.iamlights.com/', user, pass,
+      function(error, ipsconnect) {
+        if (error) {return console.log(error);}
+        console.log("Joining chat...");
+        ipschat.ipsChatLogin(ipsconnect, console.log);
+        });
   });
 
 

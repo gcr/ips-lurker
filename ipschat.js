@@ -64,7 +64,6 @@ function ipsLogin(boardUrl, user, pass, cb) {
                     }
                   }
                 }
-                console.log(querystring.stringify(query));
                 return http
                   .createClient(u.port||80,u.hostname)
                   .request('GET', '/index.php?' +
@@ -75,33 +74,34 @@ function ipsLogin(boardUrl, user, pass, cb) {
 }
 
 
-function ipsChatLogin(url, user, pass, cb) {
-  ipsLogin(url, user, pass, function(error, ipsconnect) {
-      if (error) { return cb(error); }
-      var request = ipsconnect({app: 'ipchat'});
-      request.on('response', function(response) {
-          var body = '';
-          response.on('data', function(data) {
-              body +=data.toString();
-          });
-          response.on('end', function() {
-              var accessKeyR = /var\s*accessKey\s*=\s*'([a-zA-Z0-9]*)'/,
-                  serverHostR = /var\s*serverHost\s*=\s*'(.*)'/,
-                  serverPathR = /var\s*serverPath\s*=\s*'(.*)'/,
-                  roomIdR = /var\s*roomId\s*=\s*([0-9]*)/,
-                  userNameR = /var\s*userName\s*=\s*'(.*)'/, 
-                  userIdR = /var\s*userId\s*=\s*([0-9]*)/;
-                  console.log(userIdR);
-              return cb(accessKeyR.exec(body)[1],
-                 serverHostR.exec(body)[1],
-                 serverPathR.exec(body)[1],
-                 roomIdR.exec(body)[1],
-                 userNameR.exec(body)[1],
-                 userIdR.exec(body)[1], "end");
-          });
-        });
-      request.end();
+function ipsChatLogin(ipsconnect, cb) {
+  // will log into the chat and return a nice chat object
+  var request = ipsconnect({app: 'ipchat'});
+  request.on('response', function(response) {
+      var body = '';
+      response.on('data', function(data) {
+          body +=data.toString();
+      });
+      response.on('end', function() {
+          var accessKeyR = /var\s*accessKey\s*=\s*'([a-zA-Z0-9]*)'/,
+              serverHostR = /var\s*serverHost\s*=\s*'(.*)'/,
+              serverPathR = /var\s*serverPath\s*=\s*'(.*)'/,
+              roomIdR = /var\s*roomId\s*=\s*([0-9]*)/,
+              userNameR = /var\s*userName\s*=\s*'(.*)'/, 
+              userIdR = /var\s*userId\s*=\s*([0-9]*)/;
+          if (!accessKeyR.exec(body)) {
+            return cb(new Error("Didn't get an access key"));
+          }
+          return cb(false,
+             accessKeyR.exec(body)[1],
+             serverHostR.exec(body)[1],
+             serverPathR.exec(body)[1],
+             roomIdR.exec(body)[1],
+             userNameR.exec(body)[1],
+             userIdR.exec(body)[1], "end");
+      });
     });
+  request.end();
 }
 
 
