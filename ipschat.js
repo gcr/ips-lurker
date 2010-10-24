@@ -48,11 +48,13 @@ function getLoginCredentials(cb) {
   var stdin = process.openStdin(), user='';
   process.stdout.write('User> ');
   stdin.on('data', function(data) {
+      require('child_process').exec('stty -F /dev/tty -echo');
       user=data.toString().trim();
       stdin.removeAllListeners('data');
-      process.stdout.write('Pass> \x1b[8m');
+      process.stdout.write('Pass> ');
       stdin.on('data', function(data) {
-          process.stdout.write('\x1b[0m');
+          require('child_process').exec('stty -F /dev/tty +echo');
+          process.stdout.write('\n');
           var pass=data.toString().trim();
           cb(user, pass);
           stdin.removeAllListeners('data');
@@ -62,7 +64,7 @@ function getLoginCredentials(cb) {
 }
 
 getLoginCredentials(function(user, pass){
-    ips_login('http://board.iamlights.com/', user, pass, console.log);
+    //ips_login('http://board.iamlights.com/', user, pass, console.log);
   });
 
 
