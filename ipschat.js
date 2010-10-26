@@ -24,6 +24,9 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
    *        we did not understand the message
    *    error (firstMessage)
    *        the server kicked us or something.
+   *    settled
+   *        the server will send us previous few messages when we first join the
+   *        channel. This event will appear when we've gotten the first batch.
    * Methods:
    *    ping()
    *        update our 'online' status on the forum's 'online users' list
@@ -49,6 +52,8 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
 
   this.getMessagesTimer = setInterval(bind(this, this.getMessages), 3000);
   this.getMessages();
+
+  this.settled = false; // this will be true when we've gotten some messages from the server
 }
 util.inherits(IpsChat, require('events').EventEmitter);
 
@@ -182,6 +187,13 @@ IpsChat.prototype.getMessages = function() {
                       // code
                 }
               });
+
+            // now that we've got all messages, perhaps emit the 'settled'
+            // event.
+            if (!self.settled) {
+              self.settled = true;
+              self.emit('settled');
+            }
           });
       })
     .end();
