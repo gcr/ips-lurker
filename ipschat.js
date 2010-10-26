@@ -1,109 +1,264 @@
 /*jslint regexp:false */
 var http = require('http'),
     url = require('url'),
-    sys = require('util'),
+    util = require('util'),
+    ips = require('./ips'),
     querystring = require('querystring');
 
-function parseCookies(cookies){
-  // call it on req.headers['set-cookie']
-  var result = {};
-  if (typeof cookies != 'undefined' && cookies.length) {
-    for (var i=0,l=cookies.length; i<l; i++) {
-      var cookie = cookies[i].split(';')[0] || '';
-        result[cookie.split('=')[0] || ''] = cookie.split('=')[1] || '';
-    }
-  }
-  return result;
+function bind(bindee, action) {
+  // inside 'action', 'this' will be bound to 'bindee'
+  return function() {
+    action.call(bindee);
+  };
 }
 
-function unparseCookies(cookies) {
-  // call this with an object and we'll return a string so you can just set the
-  // header.
-  // clientRequest.writeHeaders({'cookie', unparseCookies(...)});
-  var result = [];
-  for (var k in cookies) {
-    if (cookies.hasOwnProperty(k)) {
-      result.push(k+"="+cookies[k]);
+function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName, userId, secureHash, baseUrl) {
+  /* Here's an IPS chat object.
+   *
+   * Events:
+   *    message (msg, username, userId, timestamp)
+   *    user_enter (username, userId, ts)
+   *    user_kicked (uname, userId)
+   *    user_exit (uname, uid, timestamp)
+   *    unknown_msg (arguments)
+   *        we did not understand the message
+   *    error (firstMessage)
+   *        the server kicked us or something.
+   * Methods:
+   *    ping()
+   *        update our 'online' status on the forum's 'online users' list
+   *        done automatically
+   *    getMessages()
+   *        get new message (this also acts like 'ping' except for the chat room)
+   *        done automatically
+   */
+  var self = this;
+  console.log("new chat instance ", {accessKey: accessKey, serverHost: serverHost, roomId: roomId, userName: userName, userId: userId, secureHash: secureHash});
+  this.ipsconnect = ipsconnect;
+  this.accessKey = accessKey; // required on some requests
+  this.serverHost = serverHost; // where to send some requests too
+  this.serverPath = serverPath;
+  this.roomId = roomId;
+  this.userName = userName;
+  this.userId = userId;
+  this.secureHash = secureHash; // also required on some urls :/
+  this.baseUrl = baseUrl; // ping the server sometimes
+  this.lastMessageID = 0;
+
+  this.pingTimer = setInterval(bind(this, this.ping), 60000);
+  this.ping();
+
+  this.getMessagesTimer = setInterval(bind(this, this.getMessages), 3000);
+  this.getMessages();
+}
+util.inherits(IpsChat, require('events').EventEmitter);
+
+IpsChat.prototype.ping = function() {
+  // this makes you stay logged in on the "online users" page. (getMessages
+  // makes you stay logged in on the chat)
+  console.log("ping?");
+  this.boardGet({
+        app: 'ipchat',
+        module: 'ajax',
+        section: 'update',
+        md5check: this.secureHash
+      })
+    .on('response', function(response) {
+        response.on('end', function(){console.log("ping!");});
+      })
+    .end();
+};
+
+function eachMessage(messages, cb) {
+  // utility function
+  // calls callback with the message details
+  for (var i=0,l=messages.length; i<l; i++) {
+    if (messages[i].trim().length) {
+      cb.apply(this, messages[i].split(','));
     }
   }
-  return result.join('; ');
 }
 
-function ipsLogin(boardUrl, user, pass, cb) {
-  // logs in to an IPS forum
-  // calls either cb(error) or cb(false, fun) where fun is a function you can
-  // call to make a request to the authenticated board. call it like
-  // fun({query},{headers}); and it will return a htt.clientRequest
+function unserializeMsg(msg) {
+  // server sent us 'msg', so clean it up.
+  return msg
+    .replace( '~~#~~', "," )
+    .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
+    .replace( /&quot;/g, '"')
+		.replace( /__N__/g, "\n" )
+		.replace( /__C__/g, "," )
+		.replace( /__E__/g, "=" )
+		.replace( /__A__/g, "&" )
+		.replace( /__P__/g, "%" )
+		.replace( /__PS__/g, "+" );
+}
 
-  var u = url.parse(boardUrl),
-      request = http
-        .createClient(u.port||80, u.hostname)
-        .request('GET', '/index.php?' +
-          querystring.stringify({
-              app: 'core',
-              module: 'global',
-              section: 'login',
-              'do': 'process',
-              username: user, // yuck! i know
-              password: pass
-            }),
-        {'host': u.hostname});
-    request.end();
-    request.on('response', function (response) {
-        var cookies = parseCookies(response.headers['set-cookie']);
-        if (!('pass_hash' in cookies)) {
-          cb(new Error("Username/password incorrect."));
-        } else {
-          cb(false, function(query, heads) {
-                var headers = {'Cookie': unparseCookies(cookies),
-                               'host': u.hostname};
-                if (heads) {
-                  for (var k in heads) {
-                    if (heads.hasOwnProperty(k)) {
-                      headers[k] = heads[k];
+IpsChat.prototype.getMessages = function() {
+  // ask for (and handle) new messages from the server
+  // includes our own messages
+  var self = this;
+  this.get('get.php', {
+        room: this.roomId,
+        user: this.userId,
+        access_key: this.accessKey,
+        charset: 'utf8',
+        msg: this.lastMessageID
+      })
+    .on('response', function(response) {
+        var body='';
+        response.on('data', function(data ){body+=data;});
+        response.on('end', function(){
+            // body is now a list of messages split by '~~||~~'
+            var messages = body.toString().split('~~||~~');
+
+            // by convention, the first message is:  errcode,lastMessageId
+            var firstMessage = messages.shift().split(',');
+            if (firstMessage[0] != '1') {
+              // onoes it all borked
+              // we have no clue what this means but we'll handle it anyway
+              self.emit('error', firstMessage);
+              console.log('error', firstMessage);
+              clearInterval(self.pingTimer);
+              clearInterval(self.getMessagesTimer);
+              return false;
+            }
+            self.lastMessageID = firstMessage[1];
+
+            // now parse each message. Messages are simply comma-delimited(!)
+            // with lousy escaping(!!) so this should be fun.
+            eachMessage(messages, function(timestamp, msgType, username, msg, details, userId){
+                var ts	= new Date();
+                ts.setTime(timestamp * 1000); // timestamp is UNIX time
+                switch(msgType) {
+                  case '1':
+                    // A normal message.
+                    // 'details' is somehow related to private chats. If we were
+                    // a real client we'd do something about it.
+                    // Clean it up...
+                    msgType = unserializeMsg(msgType);
+                    username = unserializeMsg(username);
+                    msg = unserializeMsg(msg);
+                    // and pass it through.
+                    self.messageRecieved(msg,username,userId,ts);
+                    break;
+
+                  case '2':
+                    // A '{user} left / entered the room' message
+                    var entered = details.split('_')[0] == '1';
+                    if (entered) {
+                      self.userEnter(username, userId, ts);
+                    } else {
+                      self.userExit(username, userId, ts);
                     }
-                  }
+                    break;
+
+                  case '3':
+                    // a '/me'-style command (note that a message type of 1
+                    // with a "/me" at the very front should also be treated
+                    // like this)
+                    return arguments.callee(timestamp, 1, username, msg, details, userId);
+
+                  case '4':
+                    // a system message (treat it as a normal message for now)
+                    return arguments.callee(timestamp, 1, "***system***", msg, details, userId);
+
+                  case '5':
+                    // somebody got kicked
+                    self.kickedUser(msg, details);
+                    //              uname, uid
+                    break;
+
+                  default:
+                    self.emit('unknown_msg', arguments);
+                    console.log(arguments);
+                      // code
                 }
-                return http
-                  .createClient(u.port||80,u.hostname)
-                  .request('GET', '/index.php?' +
-                      querystring.stringify(query), headers);
               });
-        }
-    });
-}
+          });
+      })
+    .end();
+};
+
+
+IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
+  this.emit('message', msg, username, userId, timestamp);
+};
+IpsChat.prototype.userEnter = function(username, userId, ts) {
+  this.emit('user_enter', username, userId, ts);
+};
+IpsChat.prototype.kickedUser = function(userId, uname) {
+  this.emit('user_kicked', uname, userId);
+};
+IpsChat.prototype.userExit = function(uname, uid, timestamp) {
+  this.emit('user_exit', uname, uid, timestamp);
+};
+
+
+IpsChat.prototype.boardGet = function(newquery) {
+  // this sends a message to the *message board*, not the chat server.
+  var u = url.parse(this.baseUrl),
+      query = querystring.parse(u.query);
+  for (var k in newquery) {
+    if (newquery.hasOwnProperty(k)) {
+      query[k] = newquery[k];
+    }
+  }
+  return this.ipsconnect(u.pathname, query); // use the authenticated connection
+  // note: this ignores baseUrl's pathname and baseUrl's servername
+};
+
+IpsChat.prototype.get = function(path, query) {
+  // sends a message to the real chat server
+  return http
+    .createClient(80, this.serverHost)
+    .request('GET', this.serverPath+path+'?'+
+        querystring.stringify(query),
+        {'host': this.serverHost});
+};
+
 
 
 function ipsChatLogin(ipsconnect, cb) {
-  // will log into the chat and return a nice chat object
-  var request = ipsconnect({app: 'ipchat'});
+  // Use this to log in. Pass it what you get from ips.ipsLogin and we'll call you
+  // back with (error, ipschat) where error may or may not be an exception and
+  // ipschat will be an object you can assign events to.
+  var request = ipsconnect('/index.php', {app: 'ipchat'});
   request.on('response', function(response) {
+      // We need to look for those stupid 'var accessKey=...' codes they hide in
+      // the HTML.
       var body = '';
-      response.on('data', function(data) {
-          body +=data.toString();
-      });
+      response.on('data', function(data) { body+=data; });
       response.on('end', function() {
+          // why do they do it this way? i'm sorry
           var accessKeyR = /var\s*accessKey\s*=\s*'([a-zA-Z0-9]*)'/,
               serverHostR = /var\s*serverHost\s*=\s*'(.*)'/,
               serverPathR = /var\s*serverPath\s*=\s*'(.*)'/,
               roomIdR = /var\s*roomId\s*=\s*([0-9]*)/,
               userNameR = /var\s*userName\s*=\s*'(.*)'/, 
-              userIdR = /var\s*userId\s*=\s*([0-9]*)/;
+              userIdR = /var\s*userId\s*=\s*([0-9]*)/,
+              secureHashR = /ipb.vars\['secure_hash'\]\s*=\s*'([a-zA-Z0-9]*)'/,
+              baseUrlR = /ipb.vars\['base_url'\]\s*=\s*'(.*)'/;
           if (!accessKeyR.exec(body)) {
-            return cb(new Error("Didn't get an access key"));
+            return cb(new Error("Didn't get an access key. (Perhaps login error or you are not allowed to join the chat)"));
+            // or maybe they're just being dumb :<
           }
-          return cb(false,
-             accessKeyR.exec(body)[1],
-             serverHostR.exec(body)[1],
-             serverPathR.exec(body)[1],
-             roomIdR.exec(body)[1],
-             userNameR.exec(body)[1],
-             userIdR.exec(body)[1], "end");
+          try {
+            return cb(false,
+               new IpsChat(ipsconnect,
+                           accessKeyR.exec(body)[1],
+                           serverHostR.exec(body)[1],
+                           serverPathR.exec(body)[1],
+                           roomIdR.exec(body)[1],
+                           userNameR.exec(body)[1],
+                           userIdR.exec(body)[1],
+                           secureHashR.exec(body)[1],
+                           baseUrlR.exec(body)[1]));
+          } catch(err) {
+            return cb(err);
+          }
       });
     });
   request.end();
 }
 
-
-exports.ipsLogin = ipsLogin;
 exports.ipsChatLogin = ipsChatLogin;
