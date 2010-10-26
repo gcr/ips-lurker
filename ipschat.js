@@ -33,7 +33,6 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
    *        done automatically
    */
   var self = this;
-  console.log("new chat instance ", {accessKey: accessKey, serverHost: serverHost, roomId: roomId, userName: userName, userId: userId, secureHash: secureHash});
   this.ipsconnect = ipsconnect;
   this.accessKey = accessKey; // required on some requests
   this.serverHost = serverHost; // where to send some requests too
@@ -56,15 +55,11 @@ util.inherits(IpsChat, require('events').EventEmitter);
 IpsChat.prototype.ping = function() {
   // this makes you stay logged in on the "online users" page. (getMessages
   // makes you stay logged in on the chat)
-  console.log("ping?");
   this.boardGet({
         app: 'ipchat',
         module: 'ajax',
         section: 'update',
         md5check: this.secureHash
-      })
-    .on('response', function(response) {
-        response.on('end', function(){console.log("ping!");});
       })
     .end();
 };
@@ -85,12 +80,25 @@ function unserializeMsg(msg) {
     .replace( '~~#~~', "," )
     .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
     .replace( /&quot;/g, '"')
+    .replace( /&lt;/g, '<')
+    .replace( /&gt;/g, '>')
 		.replace( /__N__/g, "\n" )
 		.replace( /__C__/g, "," )
 		.replace( /__E__/g, "=" )
 		.replace( /__A__/g, "&" )
 		.replace( /__P__/g, "%" )
 		.replace( /__PS__/g, "+" );
+}
+function serializeMsg(msg) {
+  // we're about to send 'msg' so un-clean it up.
+  return msg
+    .replace(/~~\|\|~~/g, "~~| |~~") // Seriously, why would _anyone_ do it this way?
+		.replace(/\n/g, "__N__")
+		.replace(/,/g, "__C__")
+		.replace(/\=/g, "__E__")
+		.replace(/&/g, "__A__")
+		.replace(/%/g, "__P__")
+		.replace(/\+/g, "__PS__");
 }
 
 IpsChat.prototype.getMessages = function() {
@@ -101,7 +109,7 @@ IpsChat.prototype.getMessages = function() {
         room: this.roomId,
         user: this.userId,
         access_key: this.accessKey,
-        charset: 'utf8',
+        charset: 'UTF-8',
         msg: this.lastMessageID
       })
     .on('response', function(response) {
@@ -111,7 +119,7 @@ IpsChat.prototype.getMessages = function() {
             // body is now a list of messages split by '~~||~~'
             var messages = body.toString().split('~~||~~');
 
-            // by convention, the first message is:  errcode,lastMessageId
+            // by convention, the first message is:  errcode,lastMessageID
             var firstMessage = messages.shift().split(',');
             if (firstMessage[0] != '1') {
               // onoes it all borked
@@ -179,6 +187,42 @@ IpsChat.prototype.getMessages = function() {
     .end();
 };
 
+IpsChat.prototype.send = function(msg, cb) {
+  // Send something to the chat room
+  if (typeof cb == 'undefined') { cb = function(){}; }
+  var qstr = querystring.stringify({message: serializeMsg(msg), '_': ''});
+  this.get('post.php', {
+        room: this.roomId,
+        user: this.userId,
+        access_key: this.accessKey,
+        charset: 'UTF-8'
+      }, {'content-length': qstr.length,
+          'content-type': 'application/x-www-form-urlencoded; charset=UTF-8'}, 'POST')
+  .on('response', cb)
+  .end(qstr);
+};
+IpsChat.prototype.respond = IpsChat.prototype.send;
+IpsChat.prototype.reply = IpsChat.prototype.send;
+IpsChat.prototype.retort = IpsChat.prototype.send;
+IpsChat.prototype.say = IpsChat.prototype.send;
+
+/* doesn't work
+IpsChat.prototype.leave = function(cb) {
+  // leave the room.
+  if (typeof cb == 'undefined') { cb=function(){}; }
+  this.boardGet({
+        app: 'ipchat',
+        module: 'ipschat',
+        section: 'chat',
+        'do': 'leave', 
+        user: this.userId,
+        access_key: this.accessKey,
+        secure_key: this.secureHash,
+        md5check: this.secureHash
+      })
+    .on('response', cb);
+};
+*/
 
 IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
   this.emit('message', msg, username, userId, timestamp);
@@ -193,7 +237,6 @@ IpsChat.prototype.userExit = function(uname, uid, timestamp) {
   this.emit('user_exit', uname, uid, timestamp);
 };
 
-
 IpsChat.prototype.boardGet = function(newquery) {
   // this sends a message to the *message board*, not the chat server.
   var u = url.parse(this.baseUrl),
@@ -207,13 +250,19 @@ IpsChat.prototype.boardGet = function(newquery) {
   // note: this ignores baseUrl's pathname and baseUrl's servername
 };
 
-IpsChat.prototype.get = function(path, query) {
+IpsChat.prototype.get = function(path, query, headers, method) {
   // sends a message to the real chat server
+  var head = {'host': this.serverHost};
+  for (var k in headers) {
+    if (headers.hasOwnProperty(k)) {
+      head[k] = headers[k];
+    }
+  }
   return http
     .createClient(80, this.serverHost)
-    .request('GET', this.serverPath+path+'?'+
+    .request(method||'GET', this.serverPath+path+'?'+
         querystring.stringify(query),
-        {'host': this.serverHost});
+        head);
 };
 
 
