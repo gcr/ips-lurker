@@ -48,7 +48,6 @@ exports.init = function(chat) {
                 "hey "+username.toLowerCase()+"!",
                 "hi there!",
                 "whoo, somebody to talk to!",
-                "HEY EVERYBODY! "+username.toLowerCase()+"'s here!",
                 "oh look it's "+username.toLowerCase(),
                 "welcome back "+username.toLowerCase(),
                 "yaaay! "+username.toLowerCase()+" is here!",
@@ -60,6 +59,8 @@ exports.init = function(chat) {
                 "are you a yeti, "+username.toLowerCase()+"?",
                 "uh oh, sherrif's in town!",
 
+                [ "HEY EVERYBODY! "+username.toLowerCase()+"'s here!",
+                  "the party can begin now!"],
                 [ "hey look, it's jbug!",
                   "wait, that's not jbug!",
                   "oh hi "+username.toLowerCase()+" i thought you were jbug, heh"],
