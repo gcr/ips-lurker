@@ -59,35 +59,40 @@ exports.init = function(chat) {
     .stream();
 
 
-    var twRegex = /@([a-zA-Z0-9_]+)/g;
+    // twitter matching:
+    // fetch user information when someone says @user in the chat.
+    function twitterGetInfo(uname) {
+      http
+        .createClient(80, 'api.twitter.com')
+        .request('GET', '/1/users/show/'+uname+'.json',
+          {'host':'api.twitter.com'})
+        .on('response', function(res) {
+          var body='';
+          res.on('data',function(data){body+=data;})
+             .on('end', function(end) {
+               var user = JSON.parse(body.toString().trim());
+               if (!(user.error)) {
+                 chat.say(
+                   'the twitters say that [b][url="http://twitter.com/'+uname+'"]@'+uname+"[/url][/b]"+
+                   " is "+user.name+" with "+user.followers_count+" followers, "+user.statuses_count+" tweets."+
+                   (user.status? 'Latest: "'+user.status.text+'"' : " Looks like a sneaksy private account.")
+                 );
+               }
+            });
+        })
+        .end();
+    }
+
     chat.on('settled', function(){
     chat.on('message', function(msg, sendername) {
-        var match = twRegex.exec(msg);
+        var match = /@([a-zA-Z0-9_]+)/g.exec(msg);
         if (match &&
             sendername.indexOf("lurk")==-1 && // avoid self
             msg.indexOf("@lurker")==-1) {
           var uname = match[1];
           if (uname.length > 2) {
             // ask for the twitters
-            http
-              .createClient(80, 'api.twitter.com')
-              .request('GET', '/1/users/show/'+uname+'.json',
-                {'host':'api.twitter.com'})
-              .on('response', function(res) {
-                var body='';
-                res.on('data',function(data){body+=data;})
-                   .on('end', function(end) {
-                     var user = JSON.parse(body.toString().trim());
-                     if (!(user.error)) {
-                       chat.say(
-                         'the twitters say that [b][url="http://twitter.com/'+uname+'"]@'+uname+"[/url][/b]"+
-                         " is "+user.name+" with "+user.followers_count+" followers, "+user.statuses_count+" tweets."+
-                         (user.status? 'Latest: "'+user.status.text+'"' : " Looks like a sneaksy private account.")
-                       );
-                     }
-                  });
-              })
-              .end();
+            twitterGetInfo(uname);
           }
         }
       });
