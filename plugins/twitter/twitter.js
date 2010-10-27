@@ -21,8 +21,8 @@ exports.init = function(chat) {
   twit.on('tweet', function(tweet) {
       if (twit.following.indexOf(tweet.user.id) != -1) {
         chat.say(randomChoice([
-              "beep beep! ",
-              "coming through everyone! ",
+              "beep beep! the twitters say ",
+              "coming through! the twitters say ",
               "new update from the twitters! ",
               "you've got mail! ",
               "the twitters say ",
@@ -31,21 +31,26 @@ exports.init = function(chat) {
               "the twitters! ",
               "the twitters have spoken: ",
               "your twitters say: ",
-              "twitter says: ",
-              "this just in! ",
-              "uh oh it's a ",
-              "hey guys! ",
-              "hey! ",
+              "from twitter: ",
+              "this just in! the twitters: ",
+              "hey guys! twitter says: ",
+              "hey! twitters! ",
               "they say: ",
               "legend has it: ",
               "HEY EVERYONE your twitters are here! ",
               "BREAKING: ",
               "hey look guys ",
+              "moar twitter ",
+              "WARNING twitter activity detected: ",
               "next up on twitter ball z: ",
-              "what's this?",
+              "what's this? twitter!",
               "beep! ",
-              "RING RING! ",
-              "wow! ",
+              "RING RING! twitter calling! ",
+              "wow! twitter! ",
+              "captain, we are being hailed! ",
+              "ONSCREEN: ",
+              "transmission from the twitters! ",
+              "A BEAR! no wait just twitters: ",
               "", "", ""
             ]) + "[b]@"+tweet.user.screen_name+": " + tweet.text + "[/b]");
         console.log("@"+tweet.user.screen_name+": " + tweet.text);
@@ -53,7 +58,8 @@ exports.init = function(chat) {
 
     })
     .on('end', function(resp) {
-      console.log("wave goodbye... " + resp.statusCode);
+      chat.say("lost satellite uplink (tell blanky please)");
+      console.log("\n\n\n** WARNING lost sattelite uplink\n\n");
       setTimeout(exports.init, 10000);
     })
     .stream();
@@ -86,7 +92,7 @@ exports.init = function(chat) {
     chat.on('settled', function(){
     chat.on('message', function(msg, sendername, senderId) {
         var match = /@([a-zA-Z0-9_]+)/g.exec(msg);
-        if (match && senderId != chat.userId) {
+        if (match && senderId != chat.userId && msg.indexOf('@lurker') == -1) {
           var uname = match[1];
           if (uname.length > 2) {
             // ask for the twitters
