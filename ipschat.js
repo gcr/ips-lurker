@@ -202,6 +202,7 @@ IpsChat.prototype.getMessages = function() {
 IpsChat.prototype.send = function(msg, cb) {
   // Send something to the chat room
   if (typeof cb == 'undefined') { cb = function(){}; }
+  if (msg.length===0) { return cb(); }
   var qstr = querystring.stringify({message: serializeMsg(msg), '_': ''});
   this.get('post.php', {
         room: this.roomId,

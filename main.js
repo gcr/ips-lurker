@@ -30,14 +30,15 @@ ips.ipsLogin('http://board.iamlights.com/', login.user, login.pass,
         // plugin/foo/foo.js
         var plugin=null;
         if (files[i].match(/\.js$/)) {
+          console.log("   - " + files[i] + "...");
           plugin = require('./'+PLUGIN_DIR+'/'+path.basename(files[i],'.js'));
         } else if (
             fs.statSync('./'+PLUGIN_DIR+'/'+files[i]).isDirectory() &&
             path.existsSync(['.',PLUGIN_DIR,files[i],files[i]+'.js'].join('/'))) {
+          console.log("   - " + files[i] + "...");
           plugin = require(['.',PLUGIN_DIR,files[i],files[i]].join('/'));
         }
         if (plugin !== null && typeof plugin.init == 'function') {
-          console.log("   - " + files[i] + "...");
           plugin.init(chat);
         }
       }
