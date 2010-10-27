@@ -75,7 +75,7 @@ exports.init = function(chat) {
                  chat.say(
                    'the twitters say that [b][url="http://twitter.com/'+uname+'"]@'+uname+"[/url][/b]"+
                    " is "+user.name+" with "+user.followers_count+" followers, "+user.statuses_count+" tweets."+
-                   (user.status? 'Latest: "'+user.status.text+'"' : " Looks like a sneaksy private account.")
+                   (user.status? ' Latest: "'+user.status.text+'"' : " Looks like a sneaksy private account.")
                  );
                }
             });
