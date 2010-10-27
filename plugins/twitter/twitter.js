@@ -84,11 +84,9 @@ exports.init = function(chat) {
     }
 
     chat.on('settled', function(){
-    chat.on('message', function(msg, sendername) {
+    chat.on('message', function(msg, sendername, senderId) {
         var match = /@([a-zA-Z0-9_]+)/g.exec(msg);
-        if (match &&
-            sendername.indexOf("lurk")==-1 && // avoid self
-            msg.indexOf("@lurker")==-1) {
+        if (match && senderId != chat.userId) {
           var uname = match[1];
           if (uname.length > 2) {
             // ask for the twitters
