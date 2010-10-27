@@ -21,10 +21,14 @@ function randomSay(chat, sayings) {
 
 exports.init = function(chat) {
   chat.on('settled', function() {
-      chat.on('message', function(msg, username) {
+      chat.on('message', function(msg, username, uid) {
           var usr = username.toLowerCase();
+          if (uid == chat.userId) { return; }
 
-          if (msg.match(/bye/) && Math.random()>0.6) {
+          if (Math.random()>0.6 && (
+              msg.match(/bye/) ||
+              msg.match(/later/)
+            )) {
             // messages meant for others
             randomSay(chat, [
                 "so sad to see you go, "+usr+"!",
