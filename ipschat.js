@@ -83,16 +83,16 @@ function unserializeMsg(msg) {
   // server sent us 'msg', so clean it up.
   return msg
     .replace( '~~#~~', "," )
-    .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
-    .replace( /&quot;/g, '"')
-    .replace( /&lt;/g, '<')
-    .replace( /&gt;/g, '>')
 		.replace( /__N__/g, "\n" )
 		.replace( /__C__/g, "," )
 		.replace( /__E__/g, "=" )
 		.replace( /__A__/g, "&" )
 		.replace( /__P__/g, "%" )
-		.replace( /__PS__/g, "+" );
+		.replace( /__PS__/g, "+" )
+    .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
+    .replace( /&quot;/g, '"')
+    .replace( /&lt;/g, '<')
+    .replace( /&gt;/g, '>');
 }
 function serializeMsg(msg) {
   // we're about to send 'msg' so un-clean it up.
@@ -147,21 +147,16 @@ IpsChat.prototype.getMessages = function() {
                     // A normal message.
                     // 'details' is somehow related to private chats. If we were
                     // a real client we'd do something about it.
-                    // Clean it up...
-                    msgType = unserializeMsg(msgType);
-                    username = unserializeMsg(username);
-                    msg = unserializeMsg(msg);
-                    // and pass it through.
-                    self.messageRecieved(msg,username,userId,ts);
+                    self.messageRecieved(unserializeMsg(msg),unserializeMsg(username),userId,ts);
                     break;
 
                   case '2':
                     // A '{user} left / entered the room' message
                     var entered = details.split('_')[0] == '1';
                     if (entered) {
-                      self.userEnter(username, userId, ts);
+                      self.userEnter(unserializeMsg(username), userId, ts);
                     } else {
-                      self.userExit(username, userId, ts);
+                      self.userExit(unserializeMsg(username), userId, ts);
                     }
                     break;
 

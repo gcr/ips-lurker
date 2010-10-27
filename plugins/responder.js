@@ -21,14 +21,12 @@ function randomSay(chat, sayings) {
 
 exports.init = function(chat) {
   chat.on('settled', function() {
-      chat.on('message', function(msg, username, uid) {
-          var usr = username.toLowerCase();
-          if (uid == chat.userId) { return; }
 
-          if (Math.random()>0.6 && (
-              msg.match(/bye/) ||
-              msg.match(/later/)
-            )) {
+      chat.on('message', function(msg, username, uid) {
+          if (uid == chat.userId) { return; } // ignore self
+          var usr = username.toLowerCase();
+
+          if (Math.random()<0.4 && msg.match(/bye/i)) {
             // messages meant for others
             randomSay(chat, [
                 "so sad to see you go, "+usr+"!",
@@ -44,12 +42,21 @@ exports.init = function(chat) {
                 "live long and prosper, "+usr,
                 "farewell, "+usr
               ]);
-          } else if (msg.match(/lurker/i) && Math.random()>0.2) {
+          } else if (msg.match(/\bbear/i) && Math.random()<0.2) {
+            randomSay(chat, [
+                "BEARS?!",
+                ["bears?", "where?"],
+                "UH OH! bears!",
+                ["uh oh!", "a bear?"],
+                "YETI"
+              ]);
+          } else if (msg.match(/lurker/i) && Math.random()<0.8) {
             // messages meant for us
-            if (msg.match(/bye/) ||
-                msg.match(/see ya/) ||
-                msg.match(/take care/) ||
-                msg.match(/take it easy/)) {
+            if (msg.match(/bye/i) ||
+                msg.match(/see ya/i) ||
+                msg.match(/later/i) ||
+                msg.match(/take care/i) ||
+                msg.match(/take it easy/i)) {
 
               randomSay(chat, [
                   "laters, "+usr+"",
@@ -63,11 +70,12 @@ exports.init = function(chat) {
                   "live long and prosper, "+usr,
                   "farewell, "+usr
                 ]);
-            } else if (msg.match(/lame/) ||
-                       msg.match(/stupid/) ||
-                       msg.match(/lmae/) ||
-                       msg.match(/silly/) ||
-                       msg.match(/bot/)) {
+            } else if (msg.match(/lame/i) ||
+                       msg.match(/stupid/i) ||
+                       msg.match(/lmae/i) ||
+                       msg.match(/crazy/i) ||
+                       msg.match(/silly/i) ||
+                       msg.match(/bot/i)) {
               randomSay(chat, [
                   ["sticks and stones, "+usr+", sticks and stones...", "*sniff*"],
                   "yeah I'm still learning "+usr,
@@ -97,37 +105,38 @@ exports.init = function(chat) {
                   "just tell me to be quiet if I annoy you."
              ]);
             } else {
-            randomSay(chat, [
-                  "lol",
-                  "lol",
-                  "lol",
-                  "derp!",
-                  "beep?",
-                  [ "beep?", "beep beep!"],
-                  [ "huh?", "whaaa?"],
-                  [ "uh", "i dunno "+usr, "i'm just a bot"],
-                  username+"?",
-                  "what?",
-                  "you're confusing, "+usr,
-                  "who? what? "+usr+"?",
-                  "yes, "+usr+"?",
-                  "lol, "+usr+" is talking about me again",
-                  "that's me!",
-                  "over here",
-                  "uh... yes?",
-                  "I never passed my turing test, "+usr+", I have no clue what you are saying",
-                  "i don't know what you just said because I was thinking of batman!",
-                  "are you trying to tell me something?",
-                  "am I a bear?",
-                  "YETIS! help",
-                  "hmm?",
-                  "...",
-                  "sorry, can't talk; zombies!",
-                  "uh oh, you found me",
-                  "OH NO! a bear behind you, "+usr+"!!",
-                  "i don't know, i'm just a bot",
-                  "i'm just a bot"
-                ]);
+              // still addressed to lurker
+              randomSay(chat, [
+                    "lol",
+                    "lol",
+                    "lol",
+                    "derp!",
+                    "beep?",
+                    [ "beep?", "beep beep!"],
+                    [ "huh?", "whaaa?"],
+                    [ "uh", "i dunno "+usr, "i'm just a bot"],
+                    username+"?",
+                    "what?",
+                    "you're confusing, "+usr,
+                    "who? what? "+usr+"?",
+                    "yes, "+usr+"?",
+                    "lol, "+usr+" is talking about me again",
+                    "that's me!",
+                    "over here",
+                    "uh... yes?",
+                    "I never passed my turing test, "+usr+", I have no clue what you are saying",
+                    "i don't know what you just said because I was thinking of batman!",
+                    "are you trying to tell me something?",
+                    "am I a bear?",
+                    "YETIS! help",
+                    "hmm?",
+                    "...",
+                    "sorry, can't talk; zombies!",
+                    "uh oh, you found me",
+                    "OH NO! a bear behind you, "+usr+"!!",
+                    "i don't know, i'm just a bot",
+                    "i'm just a bot"
+                  ]);
             }
           }
 
