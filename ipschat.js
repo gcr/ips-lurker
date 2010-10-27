@@ -217,6 +217,7 @@ IpsChat.prototype.respond = IpsChat.prototype.send;
 IpsChat.prototype.reply = IpsChat.prototype.send;
 IpsChat.prototype.retort = IpsChat.prototype.send;
 IpsChat.prototype.say = IpsChat.prototype.send;
+IpsChat.prototype.shout = IpsChat.prototype.send;
 
 /* doesn't work
 IpsChat.prototype.leave = function(cb) {
