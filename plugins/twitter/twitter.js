@@ -59,7 +59,7 @@ exports.init = function(chat) {
       })
       .on('end', function(resp) {
         //chat.say("lost satellite uplink (tell blanky please)");
-        console.log("\n\n\n** WARNING lost sattelite uplink\n\n");
+        console.log("\n\n\n** WARNING lost sattelite uplink",new Date(), "\n\n");
         setTimeout(function() { twit.stream(); }, 10000);
       })
       .stream();
