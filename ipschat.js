@@ -80,6 +80,10 @@ util.inherits(IpsChat, require('events').EventEmitter);
 
 IpsChat.prototype.resetTimers = function() {
   // set up the timers
+  clearInterval(this.pingTimer);
+  clearInterval(this.messagePollTimer);
+  console.log(this.pingTimer);
+  console.log(this.messagePollTimer);
   this.pingTimer = setInterval(bind(this, this.ping), this.pingInterval);
   this.messagePollTimer = setInterval(bind(this, this.getMessages), this.messagePollInterval);
 };
@@ -114,6 +118,7 @@ function unserializeMsg(msg) {
 		.replace( /__C__/g, "," )
 		.replace( /__E__/g, "=" )
 		.replace( /__A__/g, "&" )
+    .replace( /&nbsp;/g, " ")
 		.replace( /__P__/g, "%" )
 		.replace( /__PS__/g, "+" )
     .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
@@ -125,17 +130,19 @@ function serializeMsg(msg) {
   // we're about to send 'msg' so un-clean it up.
   return msg
     .replace(/~~\|\|~~/g, "~~| |~~") // Seriously, why would _anyone_ do it this way?
+    //.replace(/ /g, "&nbsp;")
 		.replace(/\n/g, "__N__")
 		.replace(/,/g, "__C__")
 		.replace(/\=/g, "__E__")
 		.replace(/&/g, "__A__")
 		.replace(/%/g, "__P__")
-		.replace(/\+/g, "__PS__");
+    .replace(/\+/g, "__PS__");
 }
 
 IpsChat.prototype.getMessages = function() {
   // ask for (and handle) new messages from the server
   // includes our own messages
+  console.log("poll");
   var self = this;
   this.get('get.php', {
         room: this.roomId,
