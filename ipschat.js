@@ -194,7 +194,7 @@ IpsChat.prototype.getMessages = function() {
     .end();
 };
 
-IpsChat.prototype.send = function(msg, cb) {
+IpsChat.prototype.say = function(msg, cb) {
   // Send something to the chat room
   if (typeof cb == 'undefined') { cb = function(){}; }
   if (msg.length===0) { return cb(); }
@@ -209,11 +209,6 @@ IpsChat.prototype.send = function(msg, cb) {
   .on('response', cb)
   .end(qstr);
 };
-IpsChat.prototype.respond = IpsChat.prototype.send;
-IpsChat.prototype.reply = IpsChat.prototype.send;
-IpsChat.prototype.retort = IpsChat.prototype.send;
-IpsChat.prototype.say = IpsChat.prototype.send;
-IpsChat.prototype.shout = IpsChat.prototype.send;
 
 /* doesn't work
 IpsChat.prototype.leave = function(cb) {
