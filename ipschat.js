@@ -47,15 +47,24 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
   this.baseUrl = baseUrl; // ping the server sometimes
   this.lastMessageID = 0;
 
-  this.pingTimer = setInterval(bind(this, this.ping), 60000);
+  this.pingInterval=60000;
+  this.messagePollInterval=3000;
+  this.pingTimer=null;
+  this.messagePollTimer=null;
   this.ping();
-
-  this.getMessagesTimer = setInterval(bind(this, this.getMessages), 3000);
   this.getMessages();
+
+  this.resetTimers();
 
   this.settled = false; // this will be true when we've gotten some messages from the server
 }
 util.inherits(IpsChat, require('events').EventEmitter);
+
+IpsChat.prototype.resetTimers = function() {
+  // set up the timers
+  this.pingTimer = setInterval(bind(this, this.ping), this.pingInterval);
+  this.messagePollTimer = setInterval(bind(this, this.getMessages), this.messagePollInterval);
+};
 
 IpsChat.prototype.ping = function() {
   // this makes you stay logged in on the "online users" page. (getMessages
