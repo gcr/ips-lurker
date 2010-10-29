@@ -1,32 +1,18 @@
+var randomSay = require('../plugin_glue').randomSay;
+
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
-}
-
-function randomSay(chat, sayings) {
-  var saying = randomChoice(sayings);
-  if (saying instanceof Array) {
-    // say the sayings each a second or so apart
-    (function say() {
-      if (saying.length) {
-        chat.say(saying.shift());
-        setTimeout(say, 1500+Math.random()*2000);
-      }
-    })();
-  } else {
-    // just say it
-    chat.say(saying);
-  }
 }
 
 exports.init = function(chat) {
   chat.on('user_exit', function(username) {
       if (!chat.settled) { return; }
       if (Math.random()<0.2) {
-        randomSay(chat, [
+        randomSay([
               "B--but wait! come back!",
               "aw! "+username.toLowerCase()+" left...",
               "bye",
-              "i'll miss you"+username.toLowerCase(),
+              "i'll miss you "+username.toLowerCase(),
               [ "so as I was saying, "+username.toLowerCase().substr(0,4)+"---", username+"?", "aw he's gone"],
               "poof!",
               ["see ya", "he's gone"],
@@ -41,7 +27,7 @@ exports.init = function(chat) {
       if (uid == chat.uid || !chat.settled) { return; }
       var usr = username.toLowerCase();
       setTimeout(function() {
-        randomSay(chat, [
+        randomSay([
             "*waves*",
             "hey",
             "Heeyyyyy",

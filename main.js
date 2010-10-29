@@ -2,6 +2,7 @@ var child_process = require('child_process'),
     ipschat = require('./ipschat'),
     util = require('util'),
     fs = require('fs'),
+    pluginGlue = require('./plugin_glue'),
     path = require('path'),
     ips = require('./ips'),
 
@@ -20,6 +21,7 @@ ips.ipsLogin('http://board.iamlights.com/', login.user, login.pass,
     console.log("* Joining chat...");
     // Once we log in, join the chat.
     ipschat.ipsChatLogin(ipsconnect, function(error, chat) {
+      pluginGlue.assignChat(chat);
       if(error) { return console.log(error); }
       console.log("* Joined! Loading plugins...");
       // Once we join the chat, load plugins.

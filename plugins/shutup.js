@@ -1,24 +1,9 @@
 /*jslint regexp:false */
+var randomSay = require('../plugin_glue').randomSay;
+
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
-
-function randomSay(chat, sayings) {
-  var saying = randomChoice(sayings);
-  if (saying instanceof Array) {
-    // say the sayings each a second or so apart
-    (function say() {
-      if (saying.length) {
-        chat.say(saying.shift());
-        setTimeout(say, 1500+Math.random()*2000);
-      }
-    })();
-  } else {
-    // just say it
-    chat.say(saying);
-  }
-}
-
 
 var timeout = 3,
     left = false;
@@ -41,17 +26,17 @@ exports.init = function(chat) {
   setInterval(function() {
       if (!left) {
         console.log("*** decay",timeout);
-        timeout = Math.max(0.5, Math.round(timeout*75)/100);
+        timeout = Math.max(3, Math.round(timeout*75)/100);
         console.log("*** now",timeout);
       }
     }, 2*60*1000);
 
   chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; }
-      if (left && msg.match(/candy/i) && msg.match(/yam/i)) {
+      if (msg.match(/candy/i) && msg.match(/yam/i)) {
             // seekrit codes
             restorePower();
-            randomSay(chat, [
+            randomSay([
                 "candy? yams? YUM!",
                 "zzzzzz---mmmf? wha?",
                 "it's-a me!",

@@ -1,23 +1,8 @@
+var randomSay = require('../plugin_glue').randomSay;
+
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
-
-function randomSay(chat, sayings) {
-  var saying = randomChoice(sayings);
-  if (saying instanceof Array) {
-    // say the sayings each a second or so apart
-    (function say() {
-      if (saying.length) {
-        chat.say(saying.shift());
-        setTimeout(say, 1500+Math.random()*2000);
-      }
-    })();
-  } else {
-    // just say it
-    chat.say(saying);
-  }
-}
-
 
 exports.init = function(chat) {
 
@@ -41,7 +26,7 @@ exports.init = function(chat) {
         recentBye=true; // ignore recent farewells
         setTimeout(function() { recentBye=false;}, 20000);
         // messages meant for others
-        randomSay(chat, [
+        randomSay([
             "so sad to see you go",
             "go have pizza!",
             "bye !!",
@@ -69,7 +54,7 @@ exports.init = function(chat) {
             "farewell"
           ]);
       } else if (Math.random()<0.2 && msg.match(/\bbear/i)) {
-        randomSay(chat, [
+        randomSay([
             "BEARS?!",
             ["bears?", "where?"],
             "UH OH! bears!",
@@ -85,7 +70,7 @@ exports.init = function(chat) {
             msg.match(/later/i) ||
             msg.match(/take care/i) ||
             msg.match(/take it easy/i)) {
-          randomSay(chat, [
+          randomSay([
               "laters, "+usr+"",
               "go have pizza, "+usr+"!",
               "stay safe, "+usr+"!",
@@ -115,7 +100,7 @@ exports.init = function(chat) {
                    msg.match(/damn/i) ||
                    msg.match(/silly/i) ||
                    msg.match(/bot/i)) {
-          randomSay(chat, [
+          randomSay([
               ["sticks and stones, "+usr+", sticks and stones...", "*sniff*"],
               "yeah I'm still learning "+usr,
               "I just wanted to be a good bot ;_;",
@@ -147,12 +132,15 @@ exports.init = function(chat) {
           chat.say("Danger? Hah! I laugh in the face of danger!");
         } else if (msg.match(/love/i) ||
                    msg.match(/hero/i) ||
+                   msg.match(/favorite/i) ||
+                   msg.match(/friend/i) ||
+                   msg.match(/cute/i) ||
                    msg.match(/like/i) ||
                    msg.match(/sexy/i) ||
                    msg.match(/cool/i) ||
                    msg.match(/\bwub\b/i) ||
                    msg.match(/awesome/i)) {
-          randomSay(chat, [
+          randomSay([
               "teehee",
               "<3",
               "d'awwwww!",
@@ -161,23 +149,32 @@ exports.init = function(chat) {
             ]);
         } else {
           // still addressed to lurker
-          randomSay(chat, [
-                "lol",
-                "lol",
-                "lol",
+          randomSay([
+                "lol", "lol", "lol",
                 "derp!",
                 "beep?",
                 [ "beep?", "beep beep!"],
+                "BWOOOP",
+                "bonk!",
+                "boop bonk!",
+                "bloopsaphone!",
+                "I wish I could play an autoharp",
+                [ "only "+((new Date(new Date().getFullYear(), 11, 25)-Date.now())/1000/60/60/24)+" days until Christmas!", "jingle bells!"], 
+                [ "hey guys!", "christmas is soon!"],
                 [ "huh?", "whaaa?"],
                 [ "uh", "i dunno "+usr, "i'm just a bot"],
                 username+"?",
                 "what?",
+                "batman's that way, "+usr,
                 "you're confusing, "+usr,
                 "who? what? "+usr+"?",
                 "yes, "+usr+"?",
                 "lol, "+usr+" is talking about me again",
                 "that's me!",
                 "over here",
+                "right here",
+                "right here, "+usr,
+                "yo!",
                 "uh... yes?",
                 "I never passed my turing test, "+usr+", I have no clue what you are saying",
                 "i don't know what you just said because I was thinking of batman!",
