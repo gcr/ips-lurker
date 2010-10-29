@@ -6,19 +6,21 @@
  * here's a few extra helps that will help you help your plugins help themselves
  * and keep themselves from trampling all over each other.
  */
+// this is our global chat instance. (just one)
 var chat;
 
+// utility functions
 function ensureChat() {
   if (!chat) { throw new Error("no chat yet! call your function after it's connected."); }
 }
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
-
 exports.assignChat = function(nchat) {
   chat = nchat;
 };
 
+// let's start off with some functions for saying things
 exports.randomSay = function(sayings) {
   ensureChat();
   // will have chat automatically say things
@@ -37,3 +39,88 @@ exports.randomSay = function(sayings) {
   }
 };
 
+// now locking!
+//
+// a plugin may 'lock' the bot so he only responds to event handlers from that
+// plugin. useful for games where you don't want any more distractions, etc.
+//
+// lock with lock() and unlock with unlock(). this works by clearing(saving) all
+// unprotected event handlers and restoring them at unlock(). this means you
+// must re-assign all relevent event handlers yourself after locking the bot.
+//
+// if you simply must have an event handler fire (e.g. for logging, etc.) then
+// wrap it in protectLock, eg. turn this:
+// chat.on('message', function(msg) {console.log(msg);});
+// into this:
+// chat.on('message', lockProtect(function(msg) {console.log(msg);}));
+var eventNames = "message user_enter user_exit settled".split(' '),
+    protectedHandlers = [],
+    saved = {};
+exports.lock = function() {
+  ensureChat();
+  // two pass.
+  // for each event that we must deal with:
+  //   for each event in chat.listeners(eventName):
+  //     if it's not in protectedHandlers, add it to saved[eventName]
+  // for each event in saved[eventName]:
+  //   remove it from chat
+  // save handlers
+  console.log("LOCK");
+  for (var en=0; en<eventNames.length; en++) {
+    var eventName=eventNames[en];
+    console.log("event ", eventName);
+    saved[eventName] = saved[eventName] || [];
+    for (var i=0; i<chat.listeners(eventName).length; i++) {
+      var listener = chat.listeners(eventName)[i];
+      if (protectedHandlers.indexOf(listener) == -1) {
+        console.log("pop! ");
+        saved[eventName].push(listener);
+      }
+    }
+  }
+  console.log(saved);
+  // remove saved handlers
+  for (var savedName in saved) {
+    if (saved.hasOwnProperty(savedName)) {
+      for (var j=0,l=saved[savedName].length; j<l; j++) {
+        chat.removeListener(savedName, saved[savedName][j]);
+      }
+    }
+  }
+  console.log("done!");
+};
+
+exports.unlock = function() {
+  // very similar to above:
+  // remove unprotected events
+  // then restore from saved.
+  console.log("UNLOCK");
+  for (var en=0; en<eventNames.length; en++) {
+    var eventName=eventNames[en];
+    saved[eventName] = saved[eventName] || [];
+    for (var i=0; i<chat.listeners(eventName).length; i++) {
+      var listener = chat.listeners(eventName)[i];
+      if (protectedHandlers.indexOf(listener) == -1) {
+        chat.removeListener(eventName, listener);
+      }
+    }
+  }
+  // remove saved handlers
+  for (var savedName in saved) {
+    if (saved.hasOwnProperty(savedName)) {
+      console.log("event ", savedName);
+      for (var j=0,l=saved[savedName].length; j<l; j++) {
+        console.log("push! ");
+        chat.on(savedName, saved[savedName][j]);
+      }
+    }
+  }
+  saved = {};
+  console.log("done!");
+};
+
+exports.lockProtect = function(fun) {
+  // ensure that the given function won't get destroyed on unlock
+  protectedHandlers.push(fun);
+  return fun;
+};

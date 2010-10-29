@@ -10,16 +10,18 @@ var timeout = 3,
 exports.init = function(chat) {
   // exponential backoff
   function restorePower() {
-    left = false;
-    chat.say = chat.oldsay;
-    console.log("   * Started talking again");
+    if (left) {
+      left = false;
+      chat.prototype.say = chat.oldsay;
+      console.log("   * Started talking again");
+    }
   }
   function powerOff() {
     // todo: really leave somehow
     console.log("   * Stopped talking");
     left = true;
     chat.oldsay = chat.say;
-    chat.say = function(msg) {console.log("   * Suppressed "+msg);};
+    chat.prototype.say = function(msg) {console.log("   * Suppressed "+msg);};
     setTimeout(restorePower, 60*1000*timeout);
     timeout = Math.min(timeout * 4,60);
   }
