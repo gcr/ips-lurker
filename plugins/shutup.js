@@ -1,43 +1,42 @@
 /*jslint regexp:false */
-var randomSay = require('../plugin_glue').randomSay;
+var pluginGlue = require('../plugin_glue'),
+    randomSay = pluginGlue.randomSay,
+
+// tweak me
+    START_OUT = 3,    // minimum time
+    DECAY_MAX = 60,
+    CANDYYAM_FACTOR = 0.75, // cool off a bit when people summon me
+    ANNOY_FACTOR = 3, // by how much to multiply decay when the annoying appears
+    DECAY = 0.75,     // percent
+    DECAY_TIME = 1;   // minutes
 
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-var timeout = 3,
-    left = false;
+// exponential backoff
+var timeout = START_OUT, left = false, timer=null;
 exports.init = function(chat) {
-  // exponential backoff
+
   function restorePower() {
-    if (left) {
-      left = false;
-      chat.prototype.say = chat.oldsay;
-      console.log("   * Started talking again");
-    }
+    clearTimeout(timer);
+    left = false;
+    pluginGlue.unlock();
+    console.log("   * Started talking again");
   }
   function powerOff() {
-    // todo: really leave somehow
-    console.log("   * Stopped talking");
     left = true;
-    chat.oldsay = chat.say;
-    chat.prototype.say = function(msg) {console.log("   * Suppressed "+msg);};
-    setTimeout(restorePower, 60*1000*timeout);
-    timeout = Math.min(timeout * 4,60);
-  }
-  setInterval(function() {
-      if (!left) {
-        console.log("*** decay",timeout);
-        timeout = Math.max(3, Math.round(timeout*75)/100);
-        console.log("*** now",timeout);
-      }
-    }, 2*60*1000);
-
-  chat.on('message', function(msg, username, uid) {
+    console.log("   * Stopped talking");
+    pluginGlue.lock(); // !!!!! LOCK
+    timer = setTimeout(restorePower, 60*1000*timeout);
+    timeout = Math.min(timeout * ANNOY_FACTOR,DECAY_MAX);
+    // escape hatch
+    chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; }
       if (msg.match(/candy/i) && msg.match(/yam/i)) {
             // seekrit codes
             restorePower();
+            timeout *= CANDYYAM_FACTOR;
             randomSay([
                 "candy? yams? YUM!",
                 "zzzzzz---mmmf? wha?",
@@ -45,6 +44,7 @@ exports.init = function(chat) {
                 "whaat? candy?",
                 "ONOES A BEAR! hide me",
                 "lolololol",
+                ["GUYYYYSSSSSS", "where's my SUPER SUIT?!"],
                 "yams!",
                 "ow! hey! I have enough iron in my diet!",
                 "wha? who?",
@@ -53,8 +53,30 @@ exports.init = function(chat) {
                 "i've been summoned!",
                 ["what? who?", "where am I?"],
                 "onoes!",
+                ["i smell POPCORN", "who's making popcorn?!", "got any for ol' Lurker?"],
                 "GOTHAM NEEDS ME?!",
                 "I'll be right there!"
+              ]);
+          }
+        });
+  }
+
+  // decay
+  setInterval(function() {
+      if (!left) {
+        timeout = Math.max(timeout * DECAY, START_OUT);
+        console.log("*** decay now",timeout);
+      }
+    }, DECAY_TIME*60*1000);
+
+  // the actual trigger
+  chat.on('message', function(msg, username, uid) {
+      if (uid == chat.userId || !chat.settled) { return; }
+      if (msg.match(/candy/i) && msg.match(/yam/i)) {
+            randomSay([
+                "still here, "+username,
+                "haven't left yet",
+                "lol, hi"
               ]);
       } else if (!left && msg.match(/lurker/i) && (
           msg.match(/shut up/i) ||

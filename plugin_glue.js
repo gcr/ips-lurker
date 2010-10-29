@@ -55,8 +55,11 @@ exports.randomSay = function(sayings) {
 // chat.on('message', lockProtect(function(msg) {console.log(msg);}));
 var eventNames = "message user_enter user_exit settled".split(' '),
     protectedHandlers = [],
-    saved = {};
+    saved = {},
+    locked = false;
 exports.lock = function() {
+  if (locked) { return; }
+  locked = true;
   ensureChat();
   // two pass.
   // for each event that we must deal with:
@@ -65,20 +68,17 @@ exports.lock = function() {
   // for each event in saved[eventName]:
   //   remove it from chat
   // save handlers
-  console.log("LOCK");
+  console.log("*** LOCK");
   for (var en=0; en<eventNames.length; en++) {
     var eventName=eventNames[en];
-    console.log("event ", eventName);
     saved[eventName] = saved[eventName] || [];
     for (var i=0; i<chat.listeners(eventName).length; i++) {
       var listener = chat.listeners(eventName)[i];
       if (protectedHandlers.indexOf(listener) == -1) {
-        console.log("pop! ");
         saved[eventName].push(listener);
       }
     }
   }
-  console.log(saved);
   // remove saved handlers
   for (var savedName in saved) {
     if (saved.hasOwnProperty(savedName)) {
@@ -87,14 +87,15 @@ exports.lock = function() {
       }
     }
   }
-  console.log("done!");
 };
 
 exports.unlock = function() {
+  if (!locked) { return; }
+  locked = false;
   // very similar to above:
   // remove unprotected events
   // then restore from saved.
-  console.log("UNLOCK");
+  console.log("*** UNLOCK");
   for (var en=0; en<eventNames.length; en++) {
     var eventName=eventNames[en];
     saved[eventName] = saved[eventName] || [];
@@ -108,15 +109,12 @@ exports.unlock = function() {
   // remove saved handlers
   for (var savedName in saved) {
     if (saved.hasOwnProperty(savedName)) {
-      console.log("event ", savedName);
       for (var j=0,l=saved[savedName].length; j<l; j++) {
-        console.log("push! ");
         chat.on(savedName, saved[savedName][j]);
       }
     }
   }
   saved = {};
-  console.log("done!");
 };
 
 exports.lockProtect = function(fun) {
@@ -124,3 +122,4 @@ exports.lockProtect = function(fun) {
   protectedHandlers.push(fun);
   return fun;
 };
+exports.locked = function(){ return locked; };
