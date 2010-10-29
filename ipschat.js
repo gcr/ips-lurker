@@ -210,23 +210,23 @@ IpsChat.prototype.say = function(msg, cb) {
   .end(qstr);
 };
 
-/* doesn't work
 IpsChat.prototype.leave = function(cb) {
   // leave the room.
   if (typeof cb == 'undefined') { cb=function(){}; }
+  clearInterval(this.pingTimer);
+  clearInterval(this.getMessagesTimer);
   this.boardGet({
         app: 'ipchat',
         module: 'ipschat',
         section: 'chat',
         'do': 'leave', 
+        room: this.roomId,
         user: this.userId,
         access_key: this.accessKey,
-        secure_key: this.secureHash,
-        md5check: this.secureHash
+        secure_key: this.secureHash
       })
-    .on('response', cb);
+    .on('response', cb).end();
 };
-*/
 
 IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
   this.emit('message', msg, username, userId, timestamp);
