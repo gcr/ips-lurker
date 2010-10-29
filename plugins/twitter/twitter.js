@@ -53,7 +53,7 @@ exports.init = function(chat) {
                 "transmission from the twitters! ",
                 "A BEAR! no wait just twitters: ",
                 "", "", ""
-              ]) + "[b]@"+tweet.user.screen_name+": " + tweet.text + "[/b]");
+              ]) + "[b]@"+tweet.user.screen_name+" said: " + tweet.text + "[/b]");
         }
       })
       .on('end', function(resp) {
