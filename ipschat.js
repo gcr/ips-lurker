@@ -17,23 +17,32 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
    *
    * Events:
    *    message (msg, username, userId, timestamp)
+   *        note that this includes messages from when we're initially
+   *        connecting (ie before we enter the room, the server keeps about five
+   *        minutes' worth and sends them to you when you arrive, filter them
+   *        out with !chat.settled) and messages that you send yourself (filter
+   *        out with userId == chat.userId)
    *    user_enter (username, userId, ts)
+   *        only explicit events where a user enters the room
+   *    user_noticed (username, userId, ts)
+   *        so there is no way to query the userlist from the server and it does
+   *        not send you the userlist when you connect. (technically the client
+   *        gets an HTML soup full of <divs> but I don't want to parse that).
+   *        So this is an alternative. When the user talks but we didn't have
+   *        them in our userlist, this event is fired.
    *    user_kicked (uname, userId)
+   *        not tested
    *    user_exit (uname, uid, timestamp)
+   *        user either times our or clicks the "Leave" button, there's no way
+   *        to tell the difference
    *    unknown_msg (arguments)
-   *        we did not understand the message
+   *        we did not understand the message the server sent us (for low-level
+   *        debug)
    *    error (firstMessage)
    *        the server kicked us or something.
    *    settled
    *        the server will send us previous few messages when we first join the
    *        channel. This event will appear when we've gotten the first batch.
-   * Methods:
-   *    ping()
-   *        update our 'online' status on the forum's 'online users' list
-   *        done automatically
-   *    getMessages()
-   *        get new message (this also acts like 'ping' except for the chat room)
-   *        done automatically
    */
   var self = this;
   this.ipsconnect = ipsconnect;
@@ -53,8 +62,17 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
   this.messagePollTimer=null;
   this.ping();
   this.getMessages();
-
   this.resetTimers();
+
+  this.users = {}; // maps unames to objects
+                   // {'jeremythebug': {uid: userId,
+                   //                   name: username,
+                   //                   forumId: forumId,
+                   //                   group: group},
+                   //  ...}
+                   // note that forumId and group may not be present, so do not
+                   // count on it
+  this.userCount = 0; // kept in lockstep with above
 
   this.settled = false; // this will be true when we've gotten some messages from the server
 }
@@ -161,11 +179,12 @@ IpsChat.prototype.getMessages = function() {
 
                   case '2':
                     // A '{user} left / entered the room' message
-                    var entered = details.split('_')[0] == '1';
+                    var extra = details.split('_'); // (1|2)_userid_forumuserid_group
+                    var entered = extra[0] == '1';
                     if (entered) {
-                      self.userEnter(unserializeMsg(username), userId, ts);
+                      self.userEnter(unserializeMsg(username), extra[1], extra[2], extra[3], ts);
                     } else {
-                      self.userExit(unserializeMsg(username), userId, ts);
+                      self.userExit(unserializeMsg(username), extra[1], ts);
                     }
                     break;
 
@@ -238,15 +257,33 @@ IpsChat.prototype.leave = function(cb) {
 };
 
 IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
+  if (!(username in this.users)) {
+    this.userCount++;
+    this.users[username] = {uid: userId, name: username};
+    this.emit('user_noticed', username, userId, timestamp);
+  }
   this.emit('message', msg, username, userId, timestamp);
 };
-IpsChat.prototype.userEnter = function(username, userId, ts) {
+IpsChat.prototype.userEnter = function(username, userId, forumId, group, ts) {
+  console.log(arguments);
+  if (!(username in this.users)) {
+    this.userCount++;
+    this.users[username] = {uid: userId, name: username, forumId: forumId, group: group};
+  }
   this.emit('user_enter', username, userId, ts);
 };
 IpsChat.prototype.kickedUser = function(userId, uname) {
+  if (uname in this.users) {
+    this.userCount--;
+    delete this.users[uname];
+  }
   this.emit('user_kicked', uname, userId);
 };
 IpsChat.prototype.userExit = function(uname, uid, timestamp) {
+  if (uname in this.users) {
+    this.userCount--;
+    delete this.users[uname];
+  }
   this.emit('user_exit', uname, uid, timestamp);
 };
 
