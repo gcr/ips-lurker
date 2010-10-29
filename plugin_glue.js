@@ -55,8 +55,11 @@ exports.randomSay = function(sayings) {
 // chat.on('message', lockProtect(function(msg) {console.log(msg);}));
 var eventNames = "message user_enter user_exit settled".split(' '),
     protectedHandlers = [],
-    saved = {};
+    saved = {},
+    locked = false;
 exports.lock = function() {
+  if (locked) { return; }
+  locked = true;
   ensureChat();
   // two pass.
   // for each event that we must deal with:
@@ -87,6 +90,8 @@ exports.lock = function() {
 };
 
 exports.unlock = function() {
+  if (!locked) { return; }
+  locked = false;
   // very similar to above:
   // remove unprotected events
   // then restore from saved.
@@ -117,3 +122,4 @@ exports.lockProtect = function(fun) {
   protectedHandlers.push(fun);
   return fun;
 };
+exports.locked = function(){ return locked; };
