@@ -47,15 +47,24 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
   this.baseUrl = baseUrl; // ping the server sometimes
   this.lastMessageID = 0;
 
-  this.pingTimer = setInterval(bind(this, this.ping), 60000);
+  this.pingInterval=60000;
+  this.messagePollInterval=3000;
+  this.pingTimer=null;
+  this.messagePollTimer=null;
   this.ping();
-
-  this.getMessagesTimer = setInterval(bind(this, this.getMessages), 3000);
   this.getMessages();
+
+  this.resetTimers();
 
   this.settled = false; // this will be true when we've gotten some messages from the server
 }
 util.inherits(IpsChat, require('events').EventEmitter);
+
+IpsChat.prototype.resetTimers = function() {
+  // set up the timers
+  this.pingTimer = setInterval(bind(this, this.ping), this.pingInterval);
+  this.messagePollTimer = setInterval(bind(this, this.getMessages), this.messagePollInterval);
+};
 
 IpsChat.prototype.ping = function() {
   // this makes you stay logged in on the "online users" page. (getMessages
@@ -168,7 +177,7 @@ IpsChat.prototype.getMessages = function() {
 
                   case '4':
                     // a system message (treat it as a normal message for now)
-                    return arguments.callee(timestamp, 1, "***system***", msg, details, userId);
+                    return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
 
                   case '5':
                     // somebody got kicked
@@ -194,7 +203,7 @@ IpsChat.prototype.getMessages = function() {
     .end();
 };
 
-IpsChat.prototype.send = function(msg, cb) {
+IpsChat.prototype.say = function(msg, cb) {
   // Send something to the chat room
   if (typeof cb == 'undefined') { cb = function(){}; }
   if (msg.length===0) { return cb(); }
@@ -209,29 +218,24 @@ IpsChat.prototype.send = function(msg, cb) {
   .on('response', cb)
   .end(qstr);
 };
-IpsChat.prototype.respond = IpsChat.prototype.send;
-IpsChat.prototype.reply = IpsChat.prototype.send;
-IpsChat.prototype.retort = IpsChat.prototype.send;
-IpsChat.prototype.say = IpsChat.prototype.send;
-IpsChat.prototype.shout = IpsChat.prototype.send;
 
-/* doesn't work
 IpsChat.prototype.leave = function(cb) {
   // leave the room.
   if (typeof cb == 'undefined') { cb=function(){}; }
+  clearInterval(this.pingTimer);
+  clearInterval(this.getMessagesTimer);
   this.boardGet({
         app: 'ipchat',
         module: 'ipschat',
         section: 'chat',
         'do': 'leave', 
+        room: this.roomId,
         user: this.userId,
         access_key: this.accessKey,
-        secure_key: this.secureHash,
-        md5check: this.secureHash
+        secure_key: this.secureHash
       })
-    .on('response', cb);
+    .on('response', cb).end();
 };
-*/
 
 IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
   this.emit('message', msg, username, userId, timestamp);

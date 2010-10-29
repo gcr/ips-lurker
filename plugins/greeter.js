@@ -1,101 +1,116 @@
+var randomSay = require('../plugin_glue').randomSay;
+
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-function randomSay(chat, sayings) {
-  var saying = randomChoice(sayings);
-  if (saying instanceof Array) {
-    // say the sayings each a second or so apart
-    (function say() {
-      if (saying.length) {
-        chat.say(saying.shift());
-        setTimeout(say, 1500+Math.random()*2000);
-      }
-    })();
-  } else {
-    // just say it
-    chat.say(saying);
-  }
-}
-
 exports.init = function(chat) {
-  chat.on('settled', function() {
-      chat.on('user_exit', function(username) {
-          if (Math.random()<0.2) {
-            randomSay(chat, [
-                  "B--but wait! come back!",
-                  "aw! "+username.toLowerCase()+" left...",
-                  "bye",
-                  "poof!",
-                  ["see ya", "he's gone"],
-                  "bye "+username.toLowerCase(),
-                  "noooooo~~~~~ "+username.toLowerCase()+" is gone",
-                  "aw, I didn't get to say goodbye"
-                ]);
-          }
-        });
+  chat.on('user_exit', function(username) {
+      if (!chat.settled) { return; }
+      if (Math.random()<0.2) {
+        randomSay([
+              "B--but wait! come back!",
+              "aw! "+username.toLowerCase()+" left...",
+              "bye",
+              "i'll miss you "+username.toLowerCase(),
+              [ "so as I was saying, "+username.toLowerCase().substr(0,4)+"---", username+"?", "aw he's gone"],
+              "poof!",
+              ["see ya", "he's gone"],
+              "bye "+username.toLowerCase(),
+              "noooooo~~~~~ "+username.toLowerCase()+" is gone",
+              "aw, I didn't get to say goodbye"
+            ]);
+      }
+    });
 
-      chat.on('user_enter', function(username) {
-          setTimeout(function() {
-            randomSay(chat, [
-                "*waves*",
-                "hey",
-                "Heeyyyyy",
-                "hallo",
-                "sup",
-                "howdy "+username.toLowerCase(),
-                "hi!",
-                "hey "+username.toLowerCase()+"!",
-                "hi there!",
-                "whoo, somebody to talk to!",
-                "oh look it's "+username.toLowerCase(),
-                "welcome back "+username.toLowerCase(),
-                "yaaay! "+username.toLowerCase()+" is here!",
-                "oh hey haven't seen you in a while!",
-                "RUN! IT'S "+username.toUpperCase()+"!!!",
-                "uh oh! more humans!",
-                "thank goodness you're safe, "+username.toLowerCase()+", I thought the bears got you!",
-                "careful "+username.toLowerCase()+", I saw bears around here earlier",
-                "are you a yeti, "+username.toLowerCase()+"?",
-                "uh oh, sherrif's in town!",
+  chat.on('user_enter', function(username, uid) {
+      if (uid == chat.uid || !chat.settled) { return; }
+      var usr = username.toLowerCase();
+      setTimeout(function() {
+        randomSay([
+            "*waves*",
+            "hey",
+            "Heeyyyyy",
+            "hallo",
+            "sup",
+            "howdy "+usr,
+            "hi!",
+            "hey "+usr+"!",
+            "hi there!",
+            "whoo, somebody to talk to!",
+            "oh look it's "+usr,
+            "welcome back "+usr,
+            "yaaay! "+usr+" is here!",
+            "oh hey haven't seen you in a while!",
+            "hey! "+usr+" decided to hang with the cool kids now! ;)",
+            "you're family, "+usr+"!",
+            "ah, good morrow, "+usr+".",
+            "you're one of us now, "+usr+"!",
+            "DOORBELL!",
+            "you're a cool kid now, "+usr+"!",
+            "doorbell rings! it's "+usr+" with the pizza!",
+            "welcome to the clubhouse, "+usr+"!",
+            "secret clubhouse opens for "+usr+"!",
+            "the secret doors open and "+username.toUpperCase()+" ENTERS!",
+            usr+" guessed the password!",
+            usr+" knows the secret handshake!",
+            "agent "+usr+" reporting in!",
+            "at your command, "+usr+"!",
+            "attention! "+usr+" arrived!",
+            usr+" is one of us!",
+            "long time no see, "+usr+"!",
+            "RUN! IT'S "+username.toUpperCase()+"!!!",
+            "uh oh! more humans!",
+            "Ho thar squire",
+            "a screech of tire, a swoosh of cape, it's "+usr+"!!",
+            "thank goodness you're safe, "+usr+", I thought the bears got you!",
+            "careful "+usr+", I saw bears around here earlier",
+            "are you a yeti, "+usr+"?",
+            "uh oh, sherrif's in town!",
+            "howdy, sherriff!",
+            "ooh, the evil mastermind appears!",
+            "A wild "+usr+" appears!",
 
-                [ "HEY EVERYBODY! "+username.toLowerCase()+"'s here!",
-                  "the party can begin now!"],
-                [ "hey look, it's jbug!",
-                  "wait, that's not jbug!",
-                  "oh hi "+username.toLowerCase()+" i thought you were jbug, heh"],
-                [ "Ahoy, "+username+"!", "How are things going?"],
-                [ "Arrrgh, it be "+username+", sailin' the high seas again, arrr.",
-                  "Got any treasure for ol' lurker now, arr?" ],
-                [ "sup "+username.toLowerCase(),
-                  "how's it goin?" ],
-                [ "oh hey "+username.toLowerCase(),
-                  "we were just talking about you!" ],
-                [ "finally! we've been waiting for you!",
-                  "where have you been?!" ],
-                [ "are you Lights in disguise, "+username.toLowerCase()+"?",
-                  "hey maybe "+username.toLowerCase()+" is lights in disguise!",
-                  "sshhhhh! i won't tell, "+username.toLowerCase()+"!",
-                  "your secret is safe with me ;)"],
-                [ "got your boots on, "+username.toLowerCase()+"?",
-                  "i hear winter's mighty chilly without them!"],
-                [ "are you a bear, "+username.toLowerCase()+"?",
-                  "I think "+username.toLowerCase()+" is a bear",
-                  "or maybe a yeti.",
-                  "hmmmm."],
-                [ "are you a bear, "+username.toLowerCase()+"?",
-                  "I think "+username.toLowerCase()+" is a bear"],
-                [ "are you a bear, "+username.toLowerCase()+"?",
-                  "you sure SEEM like a bear"],
-                [ "why, it's "+username.toLowerCase()+"!",
-                  "jolly good to see you"],
-                [ "BEAR!",
-                  "oh no wait it's just you" ],
-                [ "BEAR!",
-                  "oh no wait it's just you",
-                  "hi "+username.toLowerCase() ]
-                ]);
-          }, 5000);
-        });
+            [ "when suddenly "+username.toUpperCase()+" APPEARS OUT OF NOWHERE", "and surprises everyone!"],
+            [ "it's a bird!", "it's a plane!", "it's "+username.toUpperCase()+"!"],
+            [ "it's "+usr+"!", "*sniff* AND HE'S GOT PIZZA!", "can i have some pizza, "+usr+"?"],
+            [ "happy to see us, "+usr+"?", "we're sure happy to see you!"],
+            [ "HEY EVERYBODY! "+usr+"'s here!",
+              "the party can begin now!"],
+            [ "hey look, it's jbug!",
+              "wait, that's not jbug!",
+              "oh hi "+usr+" i thought you were jbug, heh"],
+            [ "Ahoy, "+username+"!", "How are things going?"],
+            [ "Arrrgh, it be "+username+", sailin' the high seas again, arrr.",
+              "Got any treasure for ol' lurker now, arr?" ],
+            [ "sup "+usr,
+              "how's it goin?" ],
+            [ "oh hey "+usr,
+              "we were just talking about you!" ],
+            [ "finally! we've been waiting for you!",
+              "where have you been?!" ],
+            [ "are you Lights in disguise, "+usr+"?",
+              "hey maybe "+usr+" is lights in disguise!",
+              "sshhhhh! i won't tell, "+usr+"!",
+              "your secret is safe with me ;)"],
+            [ "got your boots on, "+usr+"?",
+              "i hear winter's mighty chilly without them!"],
+            [ "are you a bear, "+usr+"?",
+              "I think "+usr+" is a bear",
+              "or maybe a yeti.",
+              "hmmmm."],
+            [ "are you a bear, "+usr+"?",
+              "I think "+usr+" is a bear"],
+            [ "are you a bear, "+usr+"?",
+              "you sure SEEM like a bear"],
+            [ "why, it's "+usr+"!",
+              "jolly good to see you"],
+            [ "BEAR!",
+              "oh no wait it's just you" ],
+            [ "BEAR!",
+              "oh no wait it's just you",
+              "hi "+usr ]
+            ]);
+      }, 4000);
     });
 };

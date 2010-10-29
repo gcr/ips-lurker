@@ -7,7 +7,6 @@ function randomChoice(arr) {
 }
 
 exports.init = function(chat) {
-  chat.on('settled', function() {
     var login = JSON.parse(fs.readFileSync('./passwd').toString().trim());
     var twit = new twitter.TwitterNode({
       user: login.user,
@@ -20,8 +19,8 @@ exports.init = function(chat) {
     });
 
     twit.on('tweet', function(tweet) {
+        console.log("    * @"+tweet.user.screen_name+": " + tweet.text);
         if (twit.following.indexOf(tweet.user.id) != -1) {
-          console.log("@"+tweet.user.screen_name+": " + tweet.text);
           chat.say(randomChoice([
                 "beep beep! the twitters say ",
                 "coming through! the twitters say ",
@@ -66,7 +65,7 @@ exports.init = function(chat) {
 
       // twitter matching:
       // fetch user information when someone says @user in the chat.
-      function twitterGetInfo(uname) {
+      function twitterGetInfo(uname, sender) {
         http
           .createClient(80, 'api.twitter.com')
           .request('GET', '/1/users/show/'+uname+'.json',
@@ -77,8 +76,9 @@ exports.init = function(chat) {
                .on('end', function(end) {
                  var user = JSON.parse(body.toString().trim());
                  if (!(user.error)) {
-                   chat.say(
-                     'the twitters say that [b][url="http://twitter.com/'+uname+'"]@'+uname+"[/url][/b]"+
+                   chat.say(sender+":"+
+                     ' [b]@'+uname+'[/b]'+
+                     ' [url="http://twitter.com/'+uname+'"](follow)[/url]'+
                      " is "+user.name+" with "+user.followers_count+" followers, "+user.statuses_count+" tweets."+
                      (user.status? ' Latest: "'+user.status.text+'"' : " Looks like a sneaksy private account.")
                    );
@@ -89,15 +89,16 @@ exports.init = function(chat) {
       }
 
       chat.on('message', function(msg, sendername, senderId) {
+          if (senderId==chat.userId || !chat.settled) { return; }
+
           var match = /@([a-zA-Z0-9_]+)/g.exec(msg);
-          if (match && senderId != chat.userId && msg.indexOf('@lurker') == -1) {
+          if (match && msg.indexOf('@lurker') == -1) {
             var uname = match[1];
             if (uname.length > 2) {
               // ask for the twitters
-              twitterGetInfo(uname);
+              twitterGetInfo(uname, sendername);
             }
           }
         });
 
-  });
 };
