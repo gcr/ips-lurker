@@ -2,12 +2,26 @@
 var Game = require('./game').Game,
     pluginGlue = require('../../plugin_glue'),
     randomSay = pluginGlue.randomSay,
-    lyricPicker = require('./lyric_picker');
+    lyricPicker = require('./lyric_picker'),
+
+    AFK_THRESHHOLD = 3; // minutes
 
 var timer = null,
     againTimeout = null,
-    hangmanMode = false;
+    hangmanMode = false;  // this prevents doubles
 exports.init = function(chat ) {
+
+  function countNotAfk() {
+    var afk=0;
+    for (var usr in chat.users) {
+      if (chat.users.hasOwnProperty(usr)) {
+        if ((new Date() - chat.users[usr].lastActivity)/1000 < AFK_THRESHHOLD*60) {
+          afk++;
+        }
+      }
+    }
+    return afk;
+  }
 
   function endGame(timeout) {
     // unlock chat, reset back to where we were
@@ -50,8 +64,8 @@ exports.init = function(chat ) {
   // these functions are for getting things started.
   function waitForUsers(target, firstUser) {
     // wait for users to say yes
-    var needed = Math.floor(chat.userCount/2);
-    chat.say("WHO WANTS HANGMAN? Say 'yes' if you want to play; we'll start when we have "+needed+" people");
+    var needed = Math.floor(countNotAfk()/2);
+    chat.say("WHO WANTS HANGMAN? Say 'yes' if you want to play; we'll start when we have "+needed+" people (debug: i see "+countNotAfk()+" not-afk fellas here)");
     var wantingToPlay = {};
     wantingToPlay[firstUser] = true;
     needed--;
@@ -61,7 +75,7 @@ exports.init = function(chat ) {
         chat.removeListener('message', messageHandler);
         chat.say("we needed "+needed+" more; maybe later");
         endGame(false);
-      }, 5*1000*chat.userCount);
+      }, 5*1000*countNotAfk());
     messageHandler = function(msg, user, uid) {
       if (!chat.settled || uid == chat.userId) { return; }
       // Wait for people to say 'yes'
@@ -105,7 +119,7 @@ exports.init = function(chat ) {
     pluginGlue.lock(); // LOCK !!!!!
 
     // ask if there are any objections
-    if (chat.userCount>=4) {
+    if (countNotAfk()>=4) {
       waitForUsers(target, firstUser);
     } else {
       // only two people? sure, go for it

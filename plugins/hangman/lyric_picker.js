@@ -2,7 +2,7 @@
 
 var fs = require('fs'),
     LYRIC_FILE = "plugins/hangman/data",
-    IGNORE_RECENT = 20,
+    IGNORE_RECENT = 100,
     recent = [];
 
 exports.withRandomLyric = function(cb) {
