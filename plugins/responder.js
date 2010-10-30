@@ -10,6 +10,7 @@ exports.init = function(chat) {
 
   chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; } // ignore self
+      if (msg.match(/hang/i) && msg.match(/man/i)) { return; } // TODO fix!
 
       var usr = username.toLowerCase();
 

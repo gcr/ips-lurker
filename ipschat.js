@@ -82,8 +82,6 @@ IpsChat.prototype.resetTimers = function() {
   // set up the timers
   clearInterval(this.pingTimer);
   clearInterval(this.messagePollTimer);
-  console.log(this.pingTimer);
-  console.log(this.messagePollTimer);
   this.pingTimer = setInterval(bind(this, this.ping), this.pingInterval);
   this.messagePollTimer = setInterval(bind(this, this.getMessages), this.messagePollInterval);
 };
@@ -142,7 +140,6 @@ function serializeMsg(msg) {
 IpsChat.prototype.getMessages = function() {
   // ask for (and handle) new messages from the server
   // includes our own messages
-  console.log("poll");
   var self = this;
   this.get('get.php', {
         room: this.roomId,
@@ -272,7 +269,6 @@ IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
   this.emit('message', msg, username, userId, timestamp);
 };
 IpsChat.prototype.userEnter = function(username, userId, forumId, group, ts) {
-  console.log(arguments);
   if (!(username in this.users)) {
     this.userCount++;
     this.users[username] = {uid: userId, name: username, forumId: forumId, group: group};

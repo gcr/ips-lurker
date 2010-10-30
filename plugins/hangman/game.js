@@ -1,5 +1,6 @@
 /*jslint regexp:false */
-var test = process.openStdin();
+var test = process.openStdin(),
+    countDifferences = require('./diff').countDifferences;
 
 function bind(bindee, action) {
   // inside 'action', 'this' will be bound to 'bindee'
@@ -22,7 +23,7 @@ function initRepr(text) {
     });
   return result;
 }
-function Game(target, timeout, letterMultiples) {
+function Game(target, timeout, letterMultiples, threshhold) {
   /* A hangman game
    * Events:
    *    tick
@@ -35,6 +36,7 @@ function Game(target, timeout, letterMultiples) {
   this.stepTime = timeout || 1000;
   this.stepTimer = false;
   this.letterMultiples = letterMultiples||3;
+  this.threshhold = threshhold||5;
   // for the incremental revealing of 'target', store the game state as an array
   // of numbers. each number corresponds to the string indices of the numbers
   // we're hiding. so "hello" and [2,3] makes "he__o"
@@ -59,7 +61,7 @@ Game.prototype.tryMatch = function(probe) {
   // return true if it matches
   var target = this.target.toLowerCase().replace(/[^a-zA-Z]/g, '');
   probe = probe.toLowerCase().replace(/[^a-zA-Z]/g, '');
-  return (probe.indexOf(target) != -1);
+  return (countDifferences(target, probe) <= this.threshhold);
 };
 
 Game.prototype.step = function() {

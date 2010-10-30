@@ -5,14 +5,11 @@ exports.init = function(chat) {
     }));
   chat.on('user_noticed', lockProtect(function(username, uid) {
       console.log("*** just noticed "+username+" with uid "+uid);
-      console.log(chat.users, chat.userCount);
     }));
   chat.on('user_enter', lockProtect(function(username, uid) {
       console.log("*** "+username+" joined with uid"+uid);
-      console.log(chat.users, chat.userCount);
     }));
   chat.on('user_exit', lockProtect(function(username) {
       console.log("*** "+username+" left");
-      console.log(chat.users, chat.userCount);
     }));
 };
