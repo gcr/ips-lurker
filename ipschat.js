@@ -80,6 +80,8 @@ util.inherits(IpsChat, require('events').EventEmitter);
 
 IpsChat.prototype.resetTimers = function() {
   // set up the timers
+  clearInterval(this.pingTimer);
+  clearInterval(this.messagePollTimer);
   this.pingTimer = setInterval(bind(this, this.ping), this.pingInterval);
   this.messagePollTimer = setInterval(bind(this, this.getMessages), this.messagePollInterval);
 };
@@ -114,6 +116,7 @@ function unserializeMsg(msg) {
 		.replace( /__C__/g, "," )
 		.replace( /__E__/g, "=" )
 		.replace( /__A__/g, "&" )
+    .replace( /&nbsp;/g, " ")
 		.replace( /__P__/g, "%" )
 		.replace( /__PS__/g, "+" )
     .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
@@ -125,12 +128,13 @@ function serializeMsg(msg) {
   // we're about to send 'msg' so un-clean it up.
   return msg
     .replace(/~~\|\|~~/g, "~~| |~~") // Seriously, why would _anyone_ do it this way?
+    //.replace(/ /g, "&nbsp;")
 		.replace(/\n/g, "__N__")
 		.replace(/,/g, "__C__")
 		.replace(/\=/g, "__E__")
 		.replace(/&/g, "__A__")
 		.replace(/%/g, "__P__")
-		.replace(/\+/g, "__PS__");
+    .replace(/\+/g, "__PS__");
 }
 
 IpsChat.prototype.getMessages = function() {
@@ -265,7 +269,6 @@ IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
   this.emit('message', msg, username, userId, timestamp);
 };
 IpsChat.prototype.userEnter = function(username, userId, forumId, group, ts) {
-  console.log(arguments);
   if (!(username in this.users)) {
     this.userCount++;
     this.users[username] = {uid: userId, name: username, forumId: forumId, group: group};

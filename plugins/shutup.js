@@ -65,7 +65,9 @@ exports.init = function(chat) {
   setInterval(function() {
       if (!left) {
         timeout = Math.max(timeout * DECAY, START_OUT);
-        console.log("*** decay now",timeout);
+        if (timeout != START_OUT) {
+          console.log("*** decay now",timeout);
+        }
       }
     }, DECAY_TIME*60*1000);
 
