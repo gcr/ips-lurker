@@ -133,6 +133,7 @@ exports.init = function(chat) {
           chat.say("Danger? Hah! I laugh in the face of danger!");
         } else if (msg.match(/love/i) ||
                    msg.match(/hero/i) ||
+                   msg.match(/lurv/i) ||
                    msg.match(/favorite/i) ||
                    msg.match(/friend/i) ||
                    msg.match(/cute/i) ||
@@ -145,6 +146,7 @@ exports.init = function(chat) {
               "teehee",
               "<3",
               "d'awwwww!",
+              "lurv lurv lurv !!!!",
               "awwww "+usr+" is too kind",
               "lurv ya too "+usr
             ]);

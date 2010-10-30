@@ -44,7 +44,7 @@ exports.init = function(chat) {
                 "moar twitter ",
                 "WARNING twitter activity detected: ",
                 "next up on twitter ball z: ",
-                "what's this? twitter!",
+                "what's this? twitter! ",
                 "beep! ",
                 "RING RING! twitter calling! ",
                 "wow! twitter! ",
@@ -91,7 +91,7 @@ exports.init = function(chat) {
       chat.on('message', function(msg, sendername, senderId) {
           if (senderId==chat.userId || !chat.settled) { return; }
 
-          var match = /@([a-zA-Z0-9_]+)/g.exec(msg);
+          var match = /\B@([a-zA-Z0-9_]+)/g.exec(msg);
           if (match && msg.indexOf('@lurker') == -1) {
             var uname = match[1];
             if (uname.length > 2) {
