@@ -1,3 +1,7 @@
+/*
+ * responder.js -- add to the conversation
+ */
+
 var randomSay = require('../plugin_glue').randomSay;
 
 function randomChoice(arr) {
@@ -50,6 +54,7 @@ exports.init = function(chat) {
             "take your vitamins!",
             "yell at me if you see me somewhere!",
             "godspeed!",
+            "wait! we'll miss you!",
             "heave ho!",
             "enjoy your day!",
             "live long and prosper",
@@ -86,6 +91,7 @@ exports.init = function(chat) {
               "take your vitamins, "+usr+"!",
               "yell at me if you see me somewhere, "+usr+"!",
               "godspeed, "+usr+"!",
+              "i'll miss you, "+usr+"!",
               "bye, "+usr+"!",
               "heave ho, "+usr+"!",
               "enjoy your day, "+usr+"!",
@@ -146,6 +152,7 @@ exports.init = function(chat) {
                    msg.match(/awesome/i)) {
           randomSay([
               "teehee",
+              [usr+" and lurker sittin in a tree", "wait! ew"],
               "<3",
               "d'awwwww!",
               "lurv lurv lurv !!!!",

@@ -1,3 +1,8 @@
+/*
+ * greeter.js -- greets new people
+ *
+ * we'll greet new people and sometimes mourn those who leave
+ */
 var randomSay = require('../plugin_glue').randomSay;
 
 function randomChoice(arr) {
@@ -17,7 +22,10 @@ exports.init = function(chat) {
               ["see ya", "he's gone"],
               "bye "+username.toLowerCase(),
               "noooooo~~~~~ "+username.toLowerCase()+" is gone",
-              "aw, I didn't get to say goodbye"
+              "aw, I didn't get to say goodbye",
+              "whaaat? "+username.toLowerCase()+" disappeared!",
+              "onoes! no more "+username.toLowerCase(),
+              "wait! waaaait!....."
             ]);
       }
     });
@@ -67,8 +75,11 @@ exports.init = function(chat) {
             "are you a yeti, "+usr+"?",
             "uh oh, sherrif's in town!",
             "howdy, sherriff!",
+            "Bigfoot!",
             "ooh, the evil mastermind appears!",
             "A wild "+usr+" appears!",
+            "Christmas is coming soon, "+usr+"!",
+            "how was your day, "+usr+"?",
 
             [ "when suddenly "+username.toUpperCase()+" APPEARS OUT OF NOWHERE", "and surprises everyone!"],
             [ "it's a bird!", "it's a plane!", "it's "+username.toUpperCase()+"!"],

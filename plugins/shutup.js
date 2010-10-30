@@ -1,4 +1,8 @@
 /*jslint regexp:false */
+/*
+ * shutup.js -- goes away when people say so
+ */
+
 var pluginGlue = require('../plugin_glue'),
     randomSay = pluginGlue.randomSay,
 

@@ -4,7 +4,14 @@ var Game = require('./game').Game,
     randomSay = pluginGlue.randomSay,
     lyricPicker = require('./lyric_picker'),
 
-    AFK_THRESHHOLD = 3; // minutes
+    AFK_THRESHHOLD = 3,        // minutes
+    STEP = 10000,              // ms
+    REVEAL_LETTERS = 3,        // how many to reveal at a time
+    LETTER_LOOSENESS = 3,      // answer accepted if it's in this tolerance
+    VOTE_START_FACTOR = 0.5,   // need this many times number of users to start
+    VOTE_THRESHHOLD = 4,       // if there are >= this many active users, a vote is needed
+    VOTE_TIMEOUT_PER_USER = 5; // voting times out in this*user count seconds
+
 
 var timer = null,
     againTimeout = null,
@@ -34,7 +41,7 @@ exports.init = function(chat ) {
   function startHangman(target) {
     timer = new Date();
 
-    var g = new Game(target, 10000, 3, 3);
+    var g = new Game(target, STEP, REVEAL_LETTERS, LETTER_LOOSENESS);
     g.on('tick', function() {
         chat.say(g.toString());
       });
@@ -64,7 +71,7 @@ exports.init = function(chat ) {
   // these functions are for getting things started.
   function waitForUsers(target, firstUser) {
     // wait for users to say yes
-    var needed = Math.floor(countNotAfk()/2);
+    var needed = Math.floor(countNotAfk()*VOTE_START_FACTOR);
     chat.say("WHO WANTS HANGMAN? Say 'yes' if you want to play; we'll start when we have "+needed+" people (debug: i see "+countNotAfk()+" not-afk fellas here)");
     var wantingToPlay = {};
     wantingToPlay[firstUser] = true;
@@ -75,7 +82,7 @@ exports.init = function(chat ) {
         chat.removeListener('message', messageHandler);
         chat.say("we needed "+needed+" more; maybe later");
         endGame(false);
-      }, 5*1000*countNotAfk());
+      }, VOTE_TIMEOUT_PER_USER*1000*countNotAfk());
     messageHandler = function(msg, user, uid) {
       if (!chat.settled || uid == chat.userId) { return; }
       // Wait for people to say 'yes'
@@ -119,7 +126,7 @@ exports.init = function(chat ) {
     pluginGlue.lock(); // LOCK !!!!!
 
     // ask if there are any objections
-    if (countNotAfk()>=4) {
+    if (countNotAfk()>=VOTE_THRESHHOLD) {
       waitForUsers(target, firstUser);
     } else {
       // only two people? sure, go for it
