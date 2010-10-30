@@ -16,6 +16,7 @@ exports.init = function(chat) {
 
       if (Math.random()<0.5 && !recentBye && (
         msg.match(/bye/i) ||
+        msg.match(/good night/i) ||
         msg.match(/\bbai\b/i) ||
         msg.match(/good night/i) ||
         msg.match(/have a good one/i) ||
@@ -65,6 +66,7 @@ exports.init = function(chat) {
       } else if (msg.match(/lurker/i)) {
         // messages meant for us
         if (msg.match(/bye/i) || // they're saying bye to me
+            msg.match(/good night/i) ||
             msg.match(/\bbai\b/i) ||
             msg.match(/see ya/i) ||
             msg.match(/see you/i) ||
