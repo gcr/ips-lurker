@@ -99,7 +99,7 @@ function won(chat, user, nusers) {
                 champion+" WAS DEFEATED after three wins!",
                 "NEW CHAMPION: "+user+" killed "+champion+"'s triple combo!",
                 champion.toUpperCase()+" FLIES AWAY IN A FIT OF RAGE!",
-                "NEW HOUSE MASTER: "+champion+"!",
+                "NEW HOUSE MASTER: "+user+"!",
                 champion+" was DECIMATED after 3 wins!",
                 champion+" got OWNED after three wins in a row!",
                 champion+" got SCHOOLED. 3x streak!"

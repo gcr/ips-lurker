@@ -11,7 +11,6 @@ try {
 } catch(err) {
   console.log(err);
 }
-console.log(recent);
 
 exports.withRandomLyric = function(cb) {
   // eventually call cb with a random lyric from above
@@ -35,7 +34,6 @@ exports.withRandomLyric = function(cb) {
       // save recent
       fs.writeFile(RECENT_FILE, JSON.stringify({recent: recent}), function(err) {
           if (err) {console.log(err);}
-          console.log(recent); // for debug
           cb(lyric);
         });
 

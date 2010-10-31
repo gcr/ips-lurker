@@ -77,7 +77,7 @@ exports.init = function(chat ) {
       });
     g.start();
 
-    chat.say("Fill in the rest of lyric:", function() {
+    chat.say("Type the entire lyric:", function() {
       chat.say(g.toString());
     });
   }
@@ -149,7 +149,7 @@ exports.init = function(chat ) {
               "GET READY",
               "GET READY TO RUMBLE!",
               "INCOMING!"
-            ])+" Fill in the rest of the lyric when you know what it is.",
+            ])+" Type the lyric when you know what it is.",
           function(){ winner.announce(chat, countNotAfk());});
         clearTimeout(nobodyWantsToPlay);
         setTimeout(function() {
