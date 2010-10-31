@@ -9,6 +9,7 @@ var fs = require('fs'),
 try {
   recent = JSON.parse(fs.readFileSync(RECENT_FILE).toString().trim()).recent;
 } catch(err) {
+  console.log(err);
 }
 console.log(recent);
 
@@ -29,11 +30,12 @@ exports.withRandomLyric = function(cb) {
       } 
       recent.push(lyric);
       while (recent.length > IGNORE_RECENT) {
-        recent.unshift();
+        recent.shift(); // HAHA WHOOOPSIE this read 'unshift' before, can you find the bug?
       }
       // save recent
       fs.writeFile(RECENT_FILE, JSON.stringify({recent: recent}), function(err) {
           if (err) {console.log(err);}
+          console.log(recent); // for debug
           cb(lyric);
         });
 
