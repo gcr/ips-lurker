@@ -142,10 +142,10 @@ function announce(chat, nusers) {
         case 3:
           randomSay([
               champion+" won three times in a row and must be stopped !!",
-              "DON'T GET SCHOOLED by "+champion+" for a fourth time!",
+              "DON'T GET SCHOOLED by "+champion+" again! 3x win so far",
               "Current champion is "+champion+" who beat you THREE times in a row!",
               "Stop "+champion+"'s triple win!",
-              "YOU MUST STOP "+champion.toUpperCase()+" FROM WINNING 4x!"
+              "YOU MUST STOP "+champion.toUpperCase()+" FROM WINNING AGAIN! 3x win so far"
             ]);
           break;
         case 4:
