@@ -28,7 +28,7 @@ exports.withRandomLyric = function(cb) {
         return arguments.callee(err, data);
       } else {
         recent.push(lyric);
-        if (recent.length > IGNORE_RECENT) {
+        while (recent.length > IGNORE_RECENT) {
           recent.unshift();
         }
         // save recent
