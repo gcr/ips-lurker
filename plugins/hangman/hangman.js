@@ -38,6 +38,7 @@ exports.init = function(chat ) {
   }
 
   function endGame() {
+    console.log("endGame called");
     // unlock chat, reset back to where we were
     pluginGlue.unlock();
     chat.messagePollInterval = 3000;

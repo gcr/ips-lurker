@@ -23,6 +23,7 @@ var timeout = START_OUT, left = false, timer=null;
 exports.init = function(chat) {
 
   function restorePower() {
+    console.log("***** power restored!");
     clearTimeout(timer);
     left = false;
     pluginGlue.unlock();

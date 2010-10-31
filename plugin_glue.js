@@ -58,7 +58,7 @@ var eventNames = "message user_enter user_exit settled".split(' '),
     saved = {},
     locked = false;
 exports.lock = function() {
-  if (locked) { return; }
+  if (locked) { console.log("******** already locked"); throw new Error("Already locked!"); }
   locked = true;
   ensureChat();
   // two pass.
@@ -90,7 +90,7 @@ exports.lock = function() {
 };
 
 exports.unlock = function() {
-  if (!locked) { return; }
+  if (!locked) { console.log("***** already unlocked"); throw new Error("Already unlocked"); }
   locked = false;
   // very similar to above:
   // remove unprotected events
