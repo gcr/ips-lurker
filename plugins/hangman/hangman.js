@@ -7,7 +7,7 @@ var Game = require('./game').Game,
 
     AFK_THRESHHOLD = 3,        // minutes
     STEP = 10000,              // ms
-    REVEAL_LETTERS = 3,        // how many to reveal at a time
+    REVEAL_LETTERS = 2,        // how many to reveal at a time
     LETTER_LOOSENESS = 3,      // answer accepted if it's in this tolerance
     VOTE_START_FACTOR = 0.5,   // need this many times number of users to start
     VOTE_THRESHHOLD = 4,       // if there are >= this many active users, a vote is needed
@@ -144,6 +144,9 @@ exports.init = function(chat ) {
               "And we're off!",
               "Ok, we'll start in a moment.",
               "POWER UP! POWER UP!",
+              "WARNING: BOSS FIGHT COMMENCES",
+              "FINAL BOSS!",
+              "MISSILE LAUNCH DETECTED!",
               "PREPARE YOURSELVES!",
               "GET READY",
               "GET READY TO RUMBLE!",

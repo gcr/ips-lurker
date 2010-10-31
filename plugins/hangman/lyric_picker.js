@@ -20,12 +20,13 @@ exports.withRandomLyric = function(cb) {
                        .trim()
                        .split('\n')
                        .map(function(x){return x.trim();})
+                       .filter(function(x){return (/\#/).exec(x) === null;})
                        .filter(function(x){return x.length;}),
           lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
-      if (recent.indexOf(lyric) !== -1) {
+      if (recent.indexOf(lyric) !== -1 || lyric === null) {
+        console.log("Found recent lyric: "+lyric+", trying again");
         return arguments.callee(err, data);
       } else {
-        console.log(recent);
         recent.push(lyric);
         if (recent.length > IGNORE_RECENT) {
           recent.unshift();
@@ -38,3 +39,4 @@ exports.withRandomLyric = function(cb) {
       }
     });
 };
+

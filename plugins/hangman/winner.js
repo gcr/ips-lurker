@@ -35,6 +35,7 @@ function won(chat, user, nusers) {
               user+" is on a roll! Three times!",
               user+" knows these lyrics really well! Three times",
               user+" has a TRIPLE COMBO",
+              "I must grudgingly admit a third victory for "+user,
               user+" won THREE TIMES now!"
             ]);
            break;
@@ -51,13 +52,19 @@ function won(chat, user, nusers) {
         case 5:
           randomSay([
               user.toUpperCase()+" IS GODLIKE! 5x win!",
+              "M-M-M-M-MONSTER STREAK!EAK!eak!k! "+user.toUpperCase()+" = 5 WINS",
               user+" is LIGHTS IN DISGUISE! 5x win!",
               user+" is CHEATING! 5x win!",
-              user.toUpperCase()+" IS UNDEFEATED FIVE TIMES OVER."
+              user+" [i]insists[/i] on making a mockery of the hard work of others by winning for the fifth time",
+              user.toUpperCase()+" IS UNDEFEATED FIVE TIMES OVER.",
+              user+"'s unerringly fast fingers pull through again for a fifth win"
             ]);
            break;
         default:
           randomSay([
+              "I am confident that "+user+" is ashamded of themself after winning "+streak+" times.",
+              "as should come as no surprise to anyone, "+user+" won "+streak+" times",
+              user+" is either cheating or is a hallucinating rabid LIGHTS fan with far too much time on their hands and unerringly fast fingers. Streak: "+streak,
               user.toUpperCase()+" HAS A WINNING STREAK OF "+streak,
               user+" has a streak of "+streak+"!",
               user.toUpperCase()+" HELD THEIR STREAK OF "+streak,
@@ -141,6 +148,7 @@ function announce(chat, nusers) {
           break;
         case 3:
           randomSay([
+              "You all would do well to end "+champion+"'s triple streak right here",
               champion+" won three times in a row and must be stopped !!",
               "DON'T GET SCHOOLED by "+champion+" again! 3x win so far",
               "Current champion is "+champion+" who beat you THREE times in a row!",
@@ -152,12 +160,14 @@ function announce(chat, nusers) {
           randomSay([
               champion+" has a QUADRUPLE COMBO",
               champion.toUpperCase()+"'S QUADRUPLE COMBO MUST BE STOPPED",
-              "WARNING DANGER "+champion.toUpperCase()+" MUST BE STOPPED 4x WIN"
+              "WARNING DANGER "+champion.toUpperCase()+" MUST BE STOPPED 4x WIN",
+              "HIT "+champion.toUpperCase()+"'S WEAK POINT FOR MASSIVE DAMAGE 4x win"
             ]);
           break;
         default:
           randomSay([
               "DON'T LET "+champion.toUpperCase()+"'S STREAK OF "+streak+" DESTORY YOU",
+              champion.toUpperCase()+" IS OVER "+streak+"!!!!!",
               champion.toUpperCase()+" WON "+streak+" TIMES IN A ROW",
               "YOU MUST STOP "+champion.toUpperCase()+"'S STREAK OF "+streak
             ]);

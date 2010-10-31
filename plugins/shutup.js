@@ -90,7 +90,7 @@ exports.init = function(chat) {
           msg.match(/go away/i) ||
           msg.match(/go home/i) ||
           msg.match(/go [a-zA-Z ]*sleep/i) ||
-          msg.match(/hate/i) ||
+          msg.match(/\bhate\b/i) ||
           msg.match(/gtfo/i) ||
           msg.match(/disappear/i) ||
           //msg.match(/leave/i) || // we catch "does lurker ever leave?"
