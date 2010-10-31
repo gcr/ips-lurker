@@ -112,6 +112,7 @@ exports.init = function(chat ) {
       // Wait for people to say 'yes'
       if (!(user in wantingToPlay) &&
          (msg.match(/yes/i) ||
+          msg.match(/yep/i) ||
           msg.match(/yeah/i) ||
           msg.match(/totally/i) ||
           msg.match(/activate/i) ||
