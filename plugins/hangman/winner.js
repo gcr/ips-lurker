@@ -53,14 +53,15 @@ function won(chat, user, nusers) {
               user.toUpperCase()+" IS GODLIKE! 5x win!",
               user+" is LIGHTS IN DISGUISE! 5x win!",
               user+" is CHEATING! 5x win!",
-              user.toUpperCase()+" IS UNDEFEATED FOUR TIMES OVER."
+              user.toUpperCase()+" IS UNDEFEATED FIVE TIMES OVER."
             ]);
            break;
         default:
           randomSay([
               user.toUpperCase()+" HAS A WINNING STREAK OF "+streak,
               user+" has a streak of "+streak+"!",
-              user.toUpperCase()+" HELD THEIR STREAK OF "+streak
+              user.toUpperCase()+" HELD THEIR STREAK OF "+streak,
+              user.toUpperCase()+" IS UNDEFEATED "+streak+" TIMES OVER."
             ]);
 
     }
@@ -86,7 +87,7 @@ function won(chat, user, nusers) {
                 champion.toUpperCase()+" FLIES AWAY IN A FIT OF RAGE!",
                 "NEW HOUSE MASTER: "+champion+"!",
                 champion+" was DECIMATED after 3 wins!",
-                champion+" got OWNED. Three wins in a row!",
+                champion+" got OWNED after three wins in a row!",
                 champion+" got SCHOOLED. 3x streak!"
               ]);
             break;
@@ -102,7 +103,9 @@ function won(chat, user, nusers) {
           default:
             randomSay([
                 "It's a MIRACLE! "+champion+" is NO MORE after a streak of "+streak,
-                champion+" lost the streak of "+streak+"!"
+                user.toUpperCase()+" ENDED "+champion.toUpperCase()+"'S "+streak+"-STREAK REIGN OF TERROR!",
+                champion+" lost the streak of "+streak+"!",
+                champion.toUpperCase()+" FLIES AWAY IN A FIT OF RAGE AFTER OWNING US "+streak+" TIMES!"
               ]);
       }
     }
@@ -131,6 +134,7 @@ function announce(chat, nusers) {
         case 2:
           randomSay([
               champion+" won TWICE in a row! Gang up!",
+              "Someone must teach "+champion+" a lesson!",
               "you guys should beat "+champion+" this time! Won twice in a row!",
               "current two-time champ is "+champion
             ]);
@@ -138,6 +142,7 @@ function announce(chat, nusers) {
         case 3:
           randomSay([
               champion+" won three times in a row and must be stopped !!",
+              "DON'T GET SCHOOLED by "+champion+" for a fourth time!",
               "Current champion is "+champion+" who beat you THREE times in a row!",
               "Stop "+champion+"'s triple win!",
               "YOU MUST STOP "+champion.toUpperCase()+" FROM WINNING 4x!"
@@ -152,6 +157,7 @@ function announce(chat, nusers) {
           break;
         default:
           randomSay([
+              "DON'T LET "+champion.toUpperCase()+"'S STREAK OF "+streak+" DESTORY YOU",
               champion.toUpperCase()+" WON "+streak+" TIMES IN A ROW",
               "YOU MUST STOP "+champion.toUpperCase()+"'S STREAK OF "+streak
             ]);

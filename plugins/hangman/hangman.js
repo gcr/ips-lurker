@@ -142,7 +142,12 @@ exports.init = function(chat ) {
               "Here we go!",
               "Here it comes!",
               "And we're off!",
-              "Ok, we'll start in a moment."
+              "Ok, we'll start in a moment.",
+              "POWER UP! POWER UP!",
+              "PREPARE YOURSELVES!",
+              "GET READY",
+              "GET READY TO RUMBLE!",
+              "INCOMING!"
             ])+" Fill in the rest of the lyric when you know what it is.",
           function(){ winner.announce(chat, countNotAfk());});
         clearTimeout(nobodyWantsToPlay);
