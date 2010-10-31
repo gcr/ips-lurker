@@ -49,7 +49,6 @@ exports.init = function(chat) {
             "welcome back "+usr,
             "yaaay! "+usr+" is here!",
             "oh hey haven't seen you in a while!",
-            "hey! "+usr+" decided to hang with the cool kids now! ;)",
             "you're family, "+usr+"!",
             "ah, good morrow, "+usr+".",
             "you're one of us now, "+usr+"!",
