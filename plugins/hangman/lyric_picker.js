@@ -1,7 +1,7 @@
 // lyric picker
 
 var fs = require('fs'),
-    LYRIC_FILE = "plugins/hangman/data",
+    LYRIC_FILE = "plugins/hangman/data.tex",
     RECENT_FILE = 'plugins/hangman/recent.json',
     IGNORE_RECENT = 100,
     recent = [];
@@ -20,7 +20,7 @@ exports.withRandomLyric = function(cb) {
                        .trim()
                        .split('\n')
                        .map(function(x){return x.trim();})
-                       .filter(function(x){return (/\#/).exec(x) === null;})
+                       .filter(function(x){return (/\%/).exec(x) === null;})
                        .filter(function(x){return x.length;}),
           lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
       if (recent.indexOf(lyric) !== -1 || lyric === null) {
@@ -39,4 +39,3 @@ exports.withRandomLyric = function(cb) {
       }
     });
 };
-
