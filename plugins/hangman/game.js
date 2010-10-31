@@ -61,6 +61,7 @@ Game.prototype.tryMatch = function(probe) {
   // return true if it matches
   var target = this.target.toLowerCase().replace(/[^a-zA-Z]/g, '');
   probe = probe.toLowerCase().replace(/[^a-zA-Z]/g, '');
+  console.log(countDifferences(target, probe));
   return (countDifferences(target, probe) <=
       Math.min(this.threshhold, this.hidden.length/3));
 };
