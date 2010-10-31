@@ -91,11 +91,11 @@ exports.init = function(chat ) {
     var needed = Math.floor(countNotAfk()*VOTE_START_FACTOR),
         people = needed + (needed==1?" person":" people");
     console.log(countNotAfk()+" not-afk users");
-    chat.say(randomChoice([
+    chat.say("[b]"+randomChoice([
           "WHO WANTS HANGMAN? we need "+people,
           "anyone up for a fine ol' game of Guess the Lyric? we want "+people,
           "hangman anybody? i'll wait until we have "+people
-        ]) + " (say 'yes' if you want to play)");
+        ]) + "[/b] (say 'yes' if you want to play)");
     var wantingToPlay = {};
     wantingToPlay[firstUser] = true;
     needed--;

@@ -2,8 +2,15 @@
 
 var fs = require('fs'),
     LYRIC_FILE = "plugins/hangman/data",
+    RECENT_FILE = 'plugins/hangman/recent.json',
     IGNORE_RECENT = 100,
     recent = [];
+
+try {
+  recent = JSON.parse(fs.readFileSync(RECENT_FILE).toString().trim()).recent;
+} catch(err) {
+}
+console.log(recent);
 
 exports.withRandomLyric = function(cb) {
   // eventually call cb with a random lyric from above
@@ -23,7 +30,11 @@ exports.withRandomLyric = function(cb) {
         if (recent.length > IGNORE_RECENT) {
           recent.unshift();
         }
-        cb(lyric);
+        // save recent
+        fs.writeFile(LYRIC_FILE, JSON.stringify({recent: recent}), function(err) {
+            if (err) {console.log(err);}
+            cb(lyric);
+          });
       }
     });
 };
