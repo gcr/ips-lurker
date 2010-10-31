@@ -80,6 +80,8 @@ exports.init = function(chat) {
             "Christmas is coming soon, "+usr+"!",
             "how was your day, "+usr+"?",
 
+            [ "went over to "+usr+"'s house the other day", "too bad "+usr+" didn't even notice me", ";)" ],
+            [ usr+" makes the BEST chicken noodle soup!", "got any for us?"],
             [ "when suddenly "+username.toUpperCase()+" APPEARS OUT OF NOWHERE", "and surprises everyone!"],
             [ "it's a bird!", "it's a plane!", "it's "+username.toUpperCase()+"!"],
             [ "it's "+usr+"!", "*sniff* AND "+username.toUpperCase()+"'S GOT PIZZA!", "can i have some pizza, "+usr+"?"],

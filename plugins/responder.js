@@ -1,3 +1,4 @@
+/*jslint regexp: false*/
 /*
  * responder.js -- add to the conversation
  */
@@ -138,17 +139,17 @@ exports.init = function(chat) {
               [ "I was a great programming exercise", "probably the only exercise my creator ever got, heh"],
               "just tell me to be quiet if I annoy you."
          ]);
-        } else if (msg.match(/danger/i)) {
+        } else if (msg.match(/danger/i) || msg.match(/caution/i)) {
           chat.say("Danger? Hah! I laugh in the face of danger!");
-        } else if (msg.match(/love/i) ||
-                   msg.match(/hero/i) ||
-                   msg.match(/lurv/i) ||
-                   msg.match(/favorite/i) ||
-                   msg.match(/friend/i) ||
-                   msg.match(/cute/i) ||
-                   msg.match(/like/i) ||
-                   msg.match(/sexy/i) ||
-                   msg.match(/cool/i) ||
+        } else if (msg.match(/\blove/i) ||
+                   msg.match(/\bhero/i) ||
+                   msg.match(/\blurv/i) ||
+                   (msg.match(/\bfavorite/i) && !(msg.match(/\?/))) ||
+                   msg.match(/\bfriend/i) ||
+                   msg.match(/\bcute/i) ||
+                   msg.match(/\blike/i) ||
+                   msg.match(/\bsexy/i) ||
+                   msg.match(/\bcool/i) ||
                    msg.match(/\bwub\b/i) ||
                    msg.match(/awesome/i)) {
           randomSay([
@@ -159,6 +160,56 @@ exports.init = function(chat) {
               "lurv lurv lurv !!!!",
               "awwww "+usr+" is too kind",
               "lurv ya too "+usr
+            ]);
+        } else if (msg.match(/when.*\?/i)) {
+          randomSay([
+              [ "why, in "+((new Date(new Date().getFullYear(), 11, 25)-Date.now())/1000/60/60/24)+" days!", "SO EXCITED :DDD" ],
+              "when the pigs come home",
+              "when i feel like it",
+              "whenever you like",
+              "January 18, 2038",
+              "that already happened, "+usr
+            ]);
+        } else if (msg.match(/want.*\?/i)) {
+          randomSay([
+              "YYYEEEAAAHHH!", "no no! anything but that!", "please!"
+            ]);
+        } else if (msg.match(/why.*\?/i)) {
+          randomSay([
+              ["I guess she wasn't feeling well", "don't take it too hard"], 
+              "why? I dunno... maybe it's because 641 is a prime number",
+              "because it's my favorite",
+              [ "because the laws of quantum chronodynamics say so", "(no I don't understand them either)"],
+              "to get to the other side"
+            ]);
+        } else if (msg.match(/is.*\?/i)) {
+          randomSay([
+              "yes!",
+              "no!!", "I sure hope so"
+            ]);
+        } else if (msg.match(/\bfav.*\?/i)) {
+          randomSay([
+              "My favorites are the unreleased ones that [i]you[/i] haven't heard yet ;)",
+              [ "blue!", "NO YELLOW~~~~~"],
+              [ "drive my soup is pretty good", "wait were we talking about colors?" ],
+              "I like bacon cheeseburgers the best",
+              "always been quite partial to blue crunchy brocoli spinach Face Up",
+              "not sure, I like them all"
+            ]);
+        } else if (msg.match(/what.*\?/i)) {
+          randomSay([
+              "I dunno but it sure had better be good",
+              "why, it's merely "+randomChoice([
+                                  "superficial", "terrifying", "wonderful",
+                                  "scary", "purple", "simple"
+                                  ])+" "+randomChoice([
+                                  "beeswax", "Lights songs", "lemonade",
+                                  "sea turtle"
+                                    ])+"!",
+              [ "uh, it should have beef jerky in it!", "and candy corns too!"],
+              "dude, your guess is as good as mine",
+              "haven't the foggiest",
+              "8-ball says: 'Wait and see!'"
             ]);
         } else {
           // still addressed to lurker
