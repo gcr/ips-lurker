@@ -18,8 +18,7 @@ function randomChoice(arr) {
 }
 
 var timer = null,
-    againTimeout = null,
-    hangmanMode = false;  // this prevents doubles
+    againTimeout = null;
 
 exports.init = function(chat ) {
 
@@ -43,7 +42,6 @@ exports.init = function(chat ) {
     pluginGlue.unlock();
     chat.messagePollInterval = 3000;
     chat.resetTimers();
-    hangmanMode = false;
   }
 
   function startHangman(target) {
@@ -163,12 +161,10 @@ exports.init = function(chat ) {
   }
 
   function tryHangman(target, firstUser) {
-    if (hangmanMode) { return; }
-    hangmanMode = true;
+    if (!pluginGlue.lock()) { return; } // LOCK!!!
     // lock chat, begin
     chat.messagePollInterval = 500;
     chat.resetTimers();
-    pluginGlue.lock(); // LOCK !!!!!
 
     // ask if there are any objections
     console.log(" have "+countNotAfk()+" users");

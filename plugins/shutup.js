@@ -29,10 +29,49 @@ exports.init = function(chat) {
     pluginGlue.unlock();
     console.log("   * Started talking again");
   }
-  function powerOff() {
-    left = true;
+  function powerOff(username) {
     console.log("   * Stopped talking");
-    pluginGlue.lock(); // !!!!! LOCK
+    if (!pluginGlue.lock()) { return; } // !!!!! LOCK
+        chat.say(randomChoice([
+            username.toLowerCase()+": fine, sorry, I'll be quiet",
+            username.toLowerCase()+": oops ok",
+            username.toLowerCase()+": your wish is my command, see ya",
+            username.toLowerCase()+": bye then, sorry",
+            username.toLowerCase()+": I'll be back later, see ya",
+            username.toLowerCase()+": I'll be quiet, see ya",
+            username.toLowerCase()+": ok I'll get out of your hair",
+            username.toLowerCase()+": that's OK I use up too much bandwidth anyways, take care",
+            username.toLowerCase()+": guess I still have a ways to go, take care",
+            username.toLowerCase()+": sorry for being so rude, take care",
+            username.toLowerCase()+": sorry for being so annoying, see ya",
+            username.toLowerCase()+": sorry, I'm still learning, I'll log of",
+            username.toLowerCase()+": oh noes",
+            "run away! run away  !!!!!",
+            "take care",
+            "nap time",
+            "nap time",
+            "sleep mode activated",
+            "sleep mode activated",
+            "time to rest my bytes",
+            "disconnect activated",
+            "disconnect in progress",
+            "self destructing...",
+            "self destructing...",
+            "self destructing...",
+            "self-destruct in 3... 2....",
+            "self-destruct in 3... 2....",
+            "self-destruct in 3... 2....",
+            "self-destruct in 3... 2....",
+            "critical error: resource unwanted",
+            "brb",
+            "brb",
+            "brb",
+            "brb",
+            "brb",
+            "the humans hate me! why can't I be a good bot!!! see ya next time"
+          ]) + " (brb in ~"+Math.round(timeout) +
+               "minute"+(Math.round(timeout)==1?"":"s")+")");
+    left = true;
     timer = setTimeout(restorePower, 60*1000*timeout);
     timeout = Math.min(timeout * ANNOY_FACTOR,DECAY_MAX);
     // escape hatch
@@ -108,47 +147,7 @@ exports.init = function(chat) {
           msg.match(/you stink/i)
         )) {
 
-        chat.say(randomChoice([
-            username.toLowerCase()+": fine, sorry, I'll be quiet",
-            username.toLowerCase()+": oops ok",
-            username.toLowerCase()+": your wish is my command, see ya",
-            username.toLowerCase()+": bye then, sorry",
-            username.toLowerCase()+": I'll be back later, see ya",
-            username.toLowerCase()+": I'll be quiet, see ya",
-            username.toLowerCase()+": ok I'll get out of your hair",
-            username.toLowerCase()+": that's OK I use up too much bandwidth anyways, take care",
-            username.toLowerCase()+": guess I still have a ways to go, take care",
-            username.toLowerCase()+": sorry for being so rude, take care",
-            username.toLowerCase()+": sorry for being so annoying, see ya",
-            username.toLowerCase()+": sorry, I'm still learning, I'll log of",
-            username.toLowerCase()+": oh noes",
-            "run away! run away  !!!!!",
-            "take care",
-            "nap time",
-            "nap time",
-            "sleep mode activated",
-            "sleep mode activated",
-            "time to rest my bytes",
-            "disconnect activated",
-            "disconnect in progress",
-            "self destructing...",
-            "self destructing...",
-            "self destructing...",
-            "self-destruct in 3... 2....",
-            "self-destruct in 3... 2....",
-            "self-destruct in 3... 2....",
-            "self-destruct in 3... 2....",
-            "critical error: resource unwanted",
-            "brb",
-            "brb",
-            "brb",
-            "brb",
-            "brb",
-            "the humans hate me! why can't I be a good bot!!! see ya next time"
-          ]) + " (brb in ~"+Math.round(timeout) +
-               "minute"+(Math.round(timeout)==1?"":"s")+")",
-            powerOff
-          );
+        powerOff(username);
         }
     });
 };

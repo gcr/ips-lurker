@@ -23,19 +23,19 @@ exports.withRandomLyric = function(cb) {
                        .filter(function(x){return (/\%/).exec(x) === null;})
                        .filter(function(x){return x.length;}),
           lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
-      if (recent.indexOf(lyric) !== -1 || lyric === null) {
+      while (recent.indexOf(lyric) !== -1 || lyric === null) {
         console.log("Found recent lyric: "+lyric+", trying again");
-        return arguments.callee(err, data);
-      } else {
-        recent.push(lyric);
-        while (recent.length > IGNORE_RECENT) {
-          recent.unshift();
-        }
-        // save recent
-        fs.writeFile(RECENT_FILE, JSON.stringify({recent: recent}), function(err) {
-            if (err) {console.log(err);}
-            cb(lyric);
-          });
+        lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
+      } 
+      recent.push(lyric);
+      while (recent.length > IGNORE_RECENT) {
+        recent.unshift();
       }
+      // save recent
+      fs.writeFile(RECENT_FILE, JSON.stringify({recent: recent}), function(err) {
+          if (err) {console.log(err);}
+          cb(lyric);
+        });
+
     });
 };
