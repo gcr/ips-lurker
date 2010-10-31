@@ -3,7 +3,7 @@
 var fs = require('fs'),
     LYRIC_FILE = "plugins/hangman/data.tex",
     RECENT_FILE = 'plugins/hangman/recent.json',
-    IGNORE_RECENT = 100,
+    IGNORE_RECENT = 200, // we have above 350
     recent = [];
 
 try {
@@ -23,10 +23,10 @@ exports.withRandomLyric = function(cb) {
                        .map(function(x){return x.trim();})
                        .filter(function(x){return (/\%/).exec(x) === null;})
                        .filter(function(x){return x.length;}),
-          lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
+          lyric = lyrics[Math.floor(Math.random()*lyrics.length)];
       while (recent.indexOf(lyric) !== -1 || lyric === null) {
         console.log("Found recent lyric: "+lyric+", trying again");
-        lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
+        lyric = lyrics[Math.floor(Math.random()*lyrics.length)];
       } 
       recent.push(lyric);
       while (recent.length > IGNORE_RECENT) {

@@ -26,6 +26,7 @@ function won(chat, user, nusers) {
           randomSay([
               "that's the second time "+user+" won!",
               "looks like "+user+" won again",
+              user+" won again!!",
               "of coruse, "+user+" takes the cake again"
             ]);
             break;
