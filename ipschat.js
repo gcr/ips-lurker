@@ -201,7 +201,8 @@ IpsChat.prototype.getMessages = function() {
 
                   case '4':
                     // a system message (treat it as a normal message for now)
-                    return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
+                    //return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
+                    return; // ignore for now (causes ***system*** users to be noticed)
 
                   case '5':
                     // somebody got kicked
