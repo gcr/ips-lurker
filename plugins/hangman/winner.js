@@ -41,11 +41,13 @@ function won(chat, user, nusers) {
            break;
         case 4:
           randomSay([
+              user+"'s four-time winning streak would make Mommy proud.",
               user.toUpperCase()+" IS UNSTOPPABLE! 4x win",
               user.toUpperCase()+" TOOK THE QUADRUPLE COMBO",
               user.toUpperCase()+" IS INSANE. 4x win!",
               user+" wins again! 4x win!",
               "YOU COULD NOT STOP "+user.toUpperCase()+"!! 4x win!",
+              "As "+user+" downs another can of Jolt cola, '4x win!' blinks on their screen",
               user.toUpperCase()+" KNOWS THESE BY HEART. 4x win!"
             ]);
            break;
@@ -57,12 +59,16 @@ function won(chat, user, nusers) {
               user+" is CHEATING! 5x win!",
               user+" [i]insists[/i] on making a mockery of the hard work of others by winning for the fifth time",
               user.toUpperCase()+" IS UNDEFEATED FIVE TIMES OVER.",
-              user+"'s unerringly fast fingers pull through again for a fifth win"
+              user+"'s unerringly fast fingers pull through again for a fifth win",
+              "Lights would be proud to see "+user+"'s fifth win!",
+              user+"'s blood pressure rises as they earn their fifth win!"
             ]);
            break;
         default:
           randomSay([
               "I am confident that "+user+" is ashamded of themself after winning "+streak+" times.",
+              "Hang on, I need to forward this log to Lights; "+user+" has a streak of "+streak+"!",
+              user+"'s sweaty palms and jittery fingers have done it again! Streak: "+streak,
               "as should come as no surprise to anyone, "+user+" won "+streak+" times",
               user+" is either cheating or is a hallucinating rabid LIGHTS fan with far too much time on their hands and unerringly fast fingers. Streak: "+streak,
               user.toUpperCase()+" HAS A WINNING STREAK OF "+streak,
