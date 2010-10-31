@@ -31,7 +31,7 @@ exports.withRandomLyric = function(cb) {
           recent.unshift();
         }
         // save recent
-        fs.writeFile(LYRIC_FILE, JSON.stringify({recent: recent}), function(err) {
+        fs.writeFile(RECENT_FILE, JSON.stringify({recent: recent}), function(err) {
             if (err) {console.log(err);}
             cb(lyric);
           });
