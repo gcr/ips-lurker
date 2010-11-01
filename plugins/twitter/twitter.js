@@ -19,7 +19,7 @@ exports.init = function(chat) {
     });
 
     twit.on('tweet', function(tweet) {
-        chat.debug("    * @"+tweet.user.screen_name+": " + tweet.text);
+        chat.debug("@"+tweet.user.screen_name+": " + tweet.text);
         if (twit.following.indexOf(tweet.user.id) != -1) {
           chat.say(randomChoice([
                 "beep beep! the twitters say ",
@@ -66,7 +66,7 @@ exports.init = function(chat) {
         //chat.say("lost satellite uplink (tell blanky please)");
         if (timeout > 0) {
           chat.debug("Twitter: WARNING lost sattelite uplink",new Date());
-          setTimeout(function() { twit.stream(); }, 10*1000);
+          setTimeout(function() { twit.stream(); }, 60*1000);
           timeout--;
           setTimeout(function() { timeout++; }, 600*1000);
         } else {
