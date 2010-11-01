@@ -77,9 +77,11 @@ exports.init = function(chat ) {
       });
     g.start();
 
-    chat.say("Type the entire lyric:", function() {
-      chat.say(g.toString());
-    });
+    chat.say(('Elamind' in chat.users? "Finish this lyric before Elamind does:" :
+                                       "Finish this lyric before I do:"),
+      function() {
+        chat.say(g.toString());
+      });
   }
 
 
