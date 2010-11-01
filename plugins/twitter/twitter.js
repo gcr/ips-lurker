@@ -53,7 +53,12 @@ exports.init = function(chat) {
                 "transmission from the twitters! ",
                 "A BEAR! no wait just twitters: ",
                 "", "", ""
-              ]) + "[b]@"+tweet.user.screen_name+": " + tweet.text + "[/b]");
+              ]) + "[b]@"+tweet.user.screen_name+": " + tweet.text + " [/b]");
+          // the client automatically linkifies things that look like URL. if a
+          // person tweets a link at the end though, the client will take
+          // http://google.com[/b] and turn it into [url]google.com[/b][/url]
+          // which confuses the client, hence the extra space.        ^
+          // lame I know
         }
       })
       .on('end', function(resp) {

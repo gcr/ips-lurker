@@ -36,8 +36,8 @@ function won(chat, user, nusers) {
               user+" is on a roll! Three times!",
               user+" knows these lyrics really well! Three times",
               user+" has a TRIPLE COMBO",
-              "I must grudgingly admit a third victory for "+user,
-              user+" won THREE TIMES now!"
+              user+" won THREE TIMES now!",
+              user.toUpperCase()+" is really good at this! Third time in a row."
             ]);
            break;
         case 4:
@@ -49,7 +49,8 @@ function won(chat, user, nusers) {
               user+" wins again! 4x win!",
               "YOU COULD NOT STOP "+user.toUpperCase()+"!! 4x win!",
               "As "+user+" downs another can of Jolt cola, '4x win!' blinks on their screen",
-              user.toUpperCase()+" KNOWS THESE BY HEART. 4x win!"
+              user.toUpperCase()+" KNOWS THESE BY HEART. 4x win!",
+              "I must grudgingly admit a fourth victory for "+user
             ]);
            break;
         case 5:
@@ -71,6 +72,7 @@ function won(chat, user, nusers) {
               "Hang on, I need to forward this log to Lights; "+user+" has a streak of "+streak+"!",
               user+"'s sweaty palms and jittery fingers have done it again! Streak: "+streak,
               "as should come as no surprise to anyone, "+user+" won "+streak+" times",
+              "it is my sad duty to declare another win for "+user+" ("+streak+" in a row)",
               user+" is either cheating or is a hallucinating rabid LIGHTS fan with far too much time on their hands and unerringly fast fingers. Streak: "+streak,
               user.toUpperCase()+" HAS A WINNING STREAK OF "+streak,
               user+" has a streak of "+streak+"!",
@@ -173,8 +175,8 @@ function announce(chat, nusers) {
           break;
         default:
           randomSay([
-              "DON'T LET "+champion.toUpperCase()+"'S STREAK OF "+streak+" DESTORY YOU",
-              champion.toUpperCase()+" IS OVER "+streak+"!!!!!",
+              "DON'T LET "+champion.toUpperCase()+"'S STREAK OF "+streak+" DESTORY YOU AGAIN",
+              champion.toUpperCase()+" IS OVER "+streak+" THOUSAND!!!!!",
               champion.toUpperCase()+" WON "+streak+" TIMES IN A ROW",
               "YOU MUST STOP "+champion.toUpperCase()+"'S STREAK OF "+streak
             ]);

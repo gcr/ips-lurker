@@ -15,7 +15,8 @@ exports.init = function(chat) {
 
   chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; } // ignore self
-      if (msg.match(/hang/i) && msg.match(/man/i)) { return; } // TODO fix!
+      if ((msg.match(/hang/i) && msg.match(/man/i)) ||
+          (msg.match(/guess/i) && msg.match(/lyric/i))) { return; } // TODO fix properly!
 
       var usr = username.toLowerCase();
 
@@ -182,11 +183,6 @@ exports.init = function(chat) {
               [ "because the laws of quantum chronodynamics say so", "(no I don't understand them either)"],
               "to get to the other side"
             ]);
-        } else if (msg.match(/is.*\?/i)) {
-          randomSay([
-              "yes!",
-              "no!!", "I sure hope so"
-            ]);
         } else if (msg.match(/\bfav.*\?/i)) {
           randomSay([
               "My favorites are the unreleased ones that [i]you[/i] haven't heard yet ;)",
@@ -201,15 +197,21 @@ exports.init = function(chat) {
               "I dunno but it sure had better be good",
               "why, it's merely "+randomChoice([
                                   "superficial", "terrifying", "wonderful",
-                                  "scary", "purple", "simple"
+                                  "scary", "purple", "simple", "blue", "lethal"
                                   ])+" "+randomChoice([
                                   "beeswax", "Lights songs", "lemonade",
-                                  "sea turtle"
-                                    ])+"!",
+                                  "sea turtle", "lung disease", "cereal", "umbrellas",
+                                  "foxes", "carnivores", "halloween costumes"
+                                  ])+"!",
               [ "uh, it should have beef jerky in it!", "and candy corns too!"],
               "dude, your guess is as good as mine",
               "haven't the foggiest",
               "8-ball says: 'Wait and see!'"
+            ]);
+        } else if (msg.match(/\bis.*\?/i)) {
+          randomSay([
+              "yes!",
+              "no!!", "I sure hope so"
             ]);
         } else {
           // still addressed to lurker
