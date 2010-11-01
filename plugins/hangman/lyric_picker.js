@@ -12,7 +12,7 @@ try {
   console.log(err);
 }
 
-exports.withRandomLyric = function(cb) {
+exports.withRandomLyric = function(chat, cb) {
   // eventually call cb with a random lyric from above
   fs.readFile(LYRIC_FILE, function(err, data) {
       if (err) {throw err;}
@@ -24,7 +24,7 @@ exports.withRandomLyric = function(cb) {
                        .filter(function(x){return x.length;}),
           lyric = lyrics[Math.floor(Math.random()*lyrics.length)];
       while (recent.indexOf(lyric) !== -1 || lyric === null) {
-        console.log("Found recent lyric: "+lyric+", trying again");
+        chat.debug("Found recent lyric: "+lyric+", trying again");
         lyric = lyrics[Math.floor(Math.random()*lyrics.length)];
       } 
       recent.push(lyric);

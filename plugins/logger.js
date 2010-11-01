@@ -48,4 +48,8 @@ exports.init = function(chat) {
   chat.on('user_exit', lockProtect(function(username) {
       console.log(formatDate()+attn+blue(username+" left"));
     }));
+  chat.on('debug', lockProtect(function() {
+      console.log.apply(this, [formatDate()+attn].concat(Array.prototype.slice.call(arguments))
+                                                 .filter(function(x){return typeof x != 'undefined';}));
+    }));
 };

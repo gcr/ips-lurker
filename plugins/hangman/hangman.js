@@ -37,7 +37,7 @@ exports.init = function(chat ) {
   }
 
   function endGame() {
-    console.log("endGame called");
+    chat.debug("endGame called");
     // unlock chat, reset back to where we were
     pluginGlue.unlock();
     chat.messagePollInterval = 3000;
@@ -47,7 +47,7 @@ exports.init = function(chat ) {
   function startHangman(target) {
     timer = new Date();
 
-    console.log("game starting");
+    chat.debug("game starting");
 
     var g = new Game(target, STEP, REVEAL_LETTERS, LETTER_LOOSENESS);
     g.on('tick', function() {
@@ -56,7 +56,7 @@ exports.init = function(chat ) {
     g.on('timeout', function() {
         chat.say("The answer was " + g.target);
       });
-    g.on('stop', function() { console.log("game stopped"); endGame(); });
+    g.on('stop', function() { chat.debug("game stopped"); endGame(); });
 
     chat.on('message', function(msg, usr, uid) {
         if (uid == chat.userId || !chat.settled) { return; }
@@ -85,11 +85,11 @@ exports.init = function(chat ) {
 
   // these functions are for getting things started.
   function waitForUsers(target, firstUser) {
-    console.log("waitForUsers");
+    chat.debug("waitForUsers");
     // wait for a bit for users to say yes
     var needed = Math.floor(countNotAfk()*VOTE_START_FACTOR),
         people = needed + (needed==1?" person":" people");
-    console.log(countNotAfk()+" not-afk users");
+    chat.debug(countNotAfk()+" not-afk users");
     chat.say("[b]"+randomChoice([
           "WHO WANTS HANGMAN? we need "+people,
           "anyone up for a fine ol' game of Guess the Lyric? we want "+people,
@@ -101,14 +101,14 @@ exports.init = function(chat ) {
     var messageHandler;
     var nobodyWantsToPlay = setTimeout(function() {
         // nobody wanted to try
-        console.log("nobody wants to play");
+        chat.debug("nobody wants to play");
         chat.removeListener('message', messageHandler);
         chat.say("we needed "+needed+" more; maybe later");
         endGame();
       }, VOTE_TIMEOUT_PER_USER*1000*countNotAfk());
     messageHandler = function(msg, user, uid) {
       if (!chat.settled || uid == chat.userId) { return; }
-      console.log("messageHandler");
+      chat.debug("messageHandler");
       // Wait for people to say 'yes'
       if (!(user in wantingToPlay) &&
          (msg.match(/yes/i) ||
@@ -127,11 +127,11 @@ exports.init = function(chat ) {
           msg.match(/i.?m in/i))) {
         needed--;
         wantingToPlay[user] = true;
-        console.log(wantingToPlay);
-        console.log("need "+needed+" more");
+        chat.debug(wantingToPlay);
+        chat.debug("need "+needed+" more");
       }
       if (needed<=0) {
-        console.log("all ready");
+        chat.debug("all ready");
         chat.removeListener('message', messageHandler);
         chat.say(randomChoice([
               "OK, let's go.",
@@ -168,7 +168,7 @@ exports.init = function(chat ) {
     chat.resetTimers();
 
     // ask if there are any objections
-    console.log(" have "+countNotAfk()+" users");
+    chat.debug("have "+countNotAfk()+" users");
     if (countNotAfk()>=VOTE_THRESHHOLD) {
       waitForUsers(target, firstUser);
     } else {
@@ -184,7 +184,7 @@ exports.init = function(chat ) {
         ((msg.match(/hang/i) && msg.match(/man/i)) ||
           msg.match(/guess/i) && msg.match(/lyric/i))) {
 
-        lyricPicker.withRandomLyric(function(lyric) {
+        lyricPicker.withRandomLyric(chat, function(lyric) {
             tryHangman(lyric, usr);
           });
         

@@ -58,7 +58,7 @@ var eventNames = "message user_enter user_exit settled".split(' '),
     saved = {},
     locked = false;
 exports.lock = function() {
-  if (locked) { console.log("******** already locked"); return false; }
+  if (locked) { chat.debug("******** already locked"); return false; }
   locked = true;
   ensureChat();
   // two pass.
@@ -68,7 +68,7 @@ exports.lock = function() {
   // for each event in saved[eventName]:
   //   remove it from chat
   // save handlers
-  console.log("*** LOCK");
+  chat.debug("*** LOCK");
   for (var en=0; en<eventNames.length; en++) {
     var eventName=eventNames[en];
     saved[eventName] = saved[eventName] || [];
@@ -91,12 +91,12 @@ exports.lock = function() {
 };
 
 exports.unlock = function() {
-  if (!locked) { console.log("***** already unlocked"); return false; }
+  if (!locked) { chat.debug("***** already unlocked"); return false; }
   locked = false;
   // very similar to above:
   // remove unprotected events
   // then restore from saved.
-  console.log("*** UNLOCK");
+  chat.debug("*** UNLOCK");
   for (var en=0; en<eventNames.length; en++) {
     var eventName=eventNames[en];
     saved[eventName] = saved[eventName] || [];

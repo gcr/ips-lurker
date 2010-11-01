@@ -19,7 +19,7 @@ exports.init = function(chat) {
     });
 
     twit.on('tweet', function(tweet) {
-        console.log("    * @"+tweet.user.screen_name+": " + tweet.text);
+        chat.debug("    * @"+tweet.user.screen_name+": " + tweet.text);
         if (twit.following.indexOf(tweet.user.id) != -1) {
           chat.say(randomChoice([
                 "beep beep! the twitters say ",
@@ -60,13 +60,21 @@ exports.init = function(chat) {
           // which confuses the client, hence the extra space.        ^
           // lame I know
         }
-      })
-      .on('end', function(resp) {
+      });
+      var timeout = 5;
+      twit.on('end', function(resp) {
         //chat.say("lost satellite uplink (tell blanky please)");
-        console.log("\n\n\n** WARNING lost sattelite uplink",new Date(), "\n\n");
-        setTimeout(function() { twit.stream(); }, 10000);
-      })
-      .stream();
+        if (timeout > 0) {
+          chat.debug("Twitter: WARNING lost sattelite uplink",new Date());
+          setTimeout(function() { twit.stream(); }, 10*1000);
+          timeout--;
+          setTimeout(function() { timeout++; }, 600*1000);
+        } else {
+          chat.debug("Twitter: ERROR no more twitter! try again in an hour",new Date());
+          setTimeout(function() { timeout=5; twit.stream(); }, 60*60*1000);
+        }
+      });
+      twit.stream();
 
       // twitter matching:
       // fetch user information when someone says @user in the chat.

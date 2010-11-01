@@ -14,7 +14,6 @@ try {
   champion = r.champion; streak = r.streak;
 } catch(err) {
 }
-console.log(champion, streak);
 
 
 function won(chat, user, nusers) {
@@ -133,7 +132,7 @@ function won(chat, user, nusers) {
 
 function announce(chat, nusers) {
   // announce the beginning of the chat
-  console.log(champion, streak, nusers);
+  chat.debug("Winners: ", champion, streak, nusers);
   if (champion !== null) {
     switch(streak) {
         case 0:

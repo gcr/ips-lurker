@@ -45,6 +45,11 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
    *    settled
    *        the server will send us previous few messages when we first join the
    *        channel. This event will appear when we've gotten the first batch.
+   *    debug (msg)
+   *        the chat object will not send this event by itself. instead, various
+   *        plugins can call chat.debug("foo"). this is a convenience so that we
+   *        don't have to always use console.log() everywhere and mess up
+   *        stdout, etc. if we ever make a text-based chat client
    */
   var self = this;
   this.ipsconnect = ipsconnect;
@@ -164,7 +169,7 @@ IpsChat.prototype.getMessages = function() {
               // onoes it all borked
               // we have no clue what this means but we'll handle it anyway
               self.emit('error', firstMessage);
-              console.log('error', firstMessage);
+              self.debug('error', firstMessage);
               clearInterval(self.pingTimer);
               clearInterval(self.getMessagesTimer);
               return false;
@@ -203,7 +208,7 @@ IpsChat.prototype.getMessages = function() {
 
                   case '4':
                     // a system message (treat it as a normal message for now)
-                    this.systemMessage(msg);
+                    self.systemMessage(msg);
                     return;
 
                   case '5':
@@ -214,7 +219,7 @@ IpsChat.prototype.getMessages = function() {
 
                   default:
                     self.emit('unknown_msg', arguments);
-                    console.log(arguments);
+                    self.debug("unknown message", arguments);
                       // code
                 }
               });
@@ -326,6 +331,11 @@ IpsChat.prototype.get = function(path, query, headers, method) {
     .request(method||'GET', this.serverPath+path+'?'+
         querystring.stringify(query),
         head);
+};
+
+IpsChat.prototype.debug = function(msg) {
+  // send the debug event for logging plugins
+  this.emit('debug', msg);
 };
 
 
