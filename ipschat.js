@@ -38,6 +38,8 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
    *    unknown_msg (arguments)
    *        we did not understand the message the server sent us (for low-level
    *        debug)
+   *    system_message (msg)
+   *        called when the server sends us a system message
    *    error (firstMessage)
    *        the server kicked us or something.
    *    settled
@@ -201,9 +203,8 @@ IpsChat.prototype.getMessages = function() {
 
                   case '4':
                     // a system message (treat it as a normal message for now)
-                    //return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
-                    console.log("*** SYSTEM MESSAGE: "+msg);
-                    return; // ignore for now (causes ***system*** users to be noticed)
+                    this.systemMessage(msg);
+                    return;
 
                   case '5':
                     // somebody got kicked
@@ -294,6 +295,9 @@ IpsChat.prototype.userExit = function(uname, uid, timestamp) {
     delete this.users[uname];
   }
   this.emit('user_exit', uname, uid, timestamp);
+};
+IpsChat.prototype.systemMessage = function(msg) {
+  this.emit('system_message', msg);
 };
 
 IpsChat.prototype.boardGet = function(newquery) {
