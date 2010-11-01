@@ -24,6 +24,7 @@ What's inside
 * A nice plugin system including several plugins already:
   * `plugins/greeter.js` respons to users who arrive
   * `plugins/responder.js` responds to lurker's name
+  * `plugins/youtube.js` fetches info about youtube videos
   * `plugins/shutup.js` makes lurker be quiet when people tell him to
   * `plugins/twitter/` both repeats twitters from users into the chat and looks
     up twitter information when people mention a twitter-formatted name (like
