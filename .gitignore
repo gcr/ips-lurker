@@ -1,3 +1,5 @@
 lurkerlog
 passwd
 *.sw*
+plugins/hangman/winners.json
+#plugins/hangman/recent.json

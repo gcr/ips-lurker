@@ -1,3 +1,8 @@
+/*jslint regexp: false*/
+/*
+ * responder.js -- add to the conversation
+ */
+
 var randomSay = require('../plugin_glue').randomSay;
 
 function randomChoice(arr) {
@@ -10,12 +15,14 @@ exports.init = function(chat) {
 
   chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; } // ignore self
-      if (msg.match(/hang/i) && msg.match(/man/i)) { return; } // TODO fix!
+      if ((msg.match(/hang/i) && msg.match(/man/i)) ||
+          (msg.match(/guess/i) && msg.match(/lyric/i))) { return; } // TODO fix properly!
 
       var usr = username.toLowerCase();
 
       if (Math.random()<0.5 && !recentBye && (
         msg.match(/bye/i) ||
+        msg.match(/good night/i) ||
         msg.match(/\bbai\b/i) ||
         msg.match(/good night/i) ||
         msg.match(/have a good one/i) ||
@@ -37,7 +44,6 @@ exports.init = function(chat) {
             "later",
             "don't get hurt!",
             ["WAIT!", "don't forget your coat!"],
-            ["nooo!", "stay some more "+username.toLowerCase()+"!!"],
             "say hello to Mr. Tumnus for me",
             "stay safe!",
             "safe travels!",
@@ -45,10 +51,12 @@ exports.init = function(chat) {
             "see you on the airwaves!",
             "later days!",
             "tutloo!",
+            ["nooo!", "stay some more !!"],
             "may all the good news be yours!",
             "take your vitamins!",
             "yell at me if you see me somewhere!",
             "godspeed!",
+            "wait! we'll miss you!",
             "heave ho!",
             "enjoy your day!",
             "live long and prosper",
@@ -65,6 +73,7 @@ exports.init = function(chat) {
       } else if (msg.match(/lurker/i)) {
         // messages meant for us
         if (msg.match(/bye/i) || // they're saying bye to me
+            msg.match(/good night/i) ||
             msg.match(/\bbai\b/i) ||
             msg.match(/see ya/i) ||
             msg.match(/see you/i) ||
@@ -84,6 +93,8 @@ exports.init = function(chat) {
               "take your vitamins, "+usr+"!",
               "yell at me if you see me somewhere, "+usr+"!",
               "godspeed, "+usr+"!",
+              ["nooo!", "stay some more "+username.toLowerCase()+"!!"],
+              "i'll miss you, "+usr+"!",
               "bye, "+usr+"!",
               "heave ho, "+usr+"!",
               "enjoy your day, "+usr+"!",
@@ -129,26 +140,78 @@ exports.init = function(chat) {
               [ "I was a great programming exercise", "probably the only exercise my creator ever got, heh"],
               "just tell me to be quiet if I annoy you."
          ]);
-        } else if (msg.match(/danger/i)) {
+        } else if (msg.match(/danger/i) || msg.match(/caution/i)) {
           chat.say("Danger? Hah! I laugh in the face of danger!");
-        } else if (msg.match(/love/i) ||
-                   msg.match(/hero/i) ||
-                   msg.match(/lurv/i) ||
-                   msg.match(/favorite/i) ||
-                   msg.match(/friend/i) ||
-                   msg.match(/cute/i) ||
-                   msg.match(/like/i) ||
-                   msg.match(/sexy/i) ||
-                   msg.match(/cool/i) ||
+        } else if (msg.match(/\blove/i) ||
+                   msg.match(/\bhero/i) ||
+                   msg.match(/\blurv/i) ||
+                   (msg.match(/\bfavorite/i) && !(msg.match(/\?/))) ||
+                   msg.match(/\bfriend/i) ||
+                   msg.match(/\bcute/i) ||
+                   msg.match(/\blike/i) ||
+                   msg.match(/\bsexy/i) ||
+                   msg.match(/\bcool/i) ||
                    msg.match(/\bwub\b/i) ||
                    msg.match(/awesome/i)) {
           randomSay([
               "teehee",
+              [usr+" and lurker sittin in a tree", "wait! ew"],
               "<3",
               "d'awwwww!",
               "lurv lurv lurv !!!!",
               "awwww "+usr+" is too kind",
               "lurv ya too "+usr
+            ]);
+        } else if (msg.match(/when.*\?/i)) {
+          randomSay([
+              [ "why, in "+((new Date(new Date().getFullYear(), 11, 25)-Date.now())/1000/60/60/24)+" days!", "SO EXCITED :DDD" ],
+              "when the pigs come home",
+              "when i feel like it",
+              "whenever you like",
+              "January 18, 2038",
+              "that already happened, "+usr
+            ]);
+        } else if (msg.match(/want.*\?/i)) {
+          randomSay([
+              "YYYEEEAAAHHH!", "no no! anything but that!", "please!"
+            ]);
+        } else if (msg.match(/why.*\?/i)) {
+          randomSay([
+              ["I guess she wasn't feeling well", "don't take it too hard"], 
+              "why? I dunno... maybe it's because 641 is a prime number",
+              "because it's my favorite",
+              [ "because the laws of quantum chronodynamics say so", "(no I don't understand them either)"],
+              "to get to the other side"
+            ]);
+        } else if (msg.match(/\bfav.*\?/i)) {
+          randomSay([
+              "My favorites are the unreleased ones that [i]you[/i] haven't heard yet ;)",
+              [ "blue!", "NO YELLOW~~~~~"],
+              [ "drive my soup is pretty good", "wait were we talking about colors?" ],
+              "I like bacon cheeseburgers the best",
+              "always been quite partial to blue crunchy brocoli spinach Face Up",
+              "not sure, I like them all"
+            ]);
+        } else if (msg.match(/what.*\?/i)) {
+          randomSay([
+              "I dunno but it sure had better be good",
+              "why, it's merely "+randomChoice([
+                                  "superficial", "terrifying", "wonderful",
+                                  "scary", "purple", "simple", "blue", "lethal"
+                                  ])+" "+randomChoice([
+                                  "beeswax", "Lights songs", "lemonade",
+                                  "sea turtle", "lung disease", "cereal", "umbrellas",
+                                  "foxes", "carnivores", "halloween costumes"
+                                  ])+"!",
+              [ "uh, it should have beef jerky in it!", "and candy corns too!"],
+              "dude, your guess is as good as mine",
+              "haven't the foggiest",
+              "8-ball says: 'Wait and see!'"
+            ]);
+        } else if (msg.match(/\bis.*\?/i)) {
+          randomSay([
+              "yes!",
+              "no!!", "I sure hope so"
             ]);
         } else {
           // still addressed to lurker

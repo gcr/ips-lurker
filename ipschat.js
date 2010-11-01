@@ -120,6 +120,7 @@ function unserializeMsg(msg) {
 		.replace( /__P__/g, "%" )
 		.replace( /__PS__/g, "+" )
     .replace( /&#039;/g, "'")   // todo: proper de-entity-ization
+    .replace( /&#33;/g, "!")
     .replace( /&quot;/g, '"')
     .replace( /&lt;/g, '<')
     .replace( /&gt;/g, '>');
@@ -200,7 +201,9 @@ IpsChat.prototype.getMessages = function() {
 
                   case '4':
                     // a system message (treat it as a normal message for now)
-                    return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
+                    //return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
+                    console.log("*** SYSTEM MESSAGE: "+msg);
+                    return; // ignore for now (causes ***system*** users to be noticed)
 
                   case '5':
                     // somebody got kicked
@@ -246,7 +249,7 @@ IpsChat.prototype.leave = function(cb) {
   // leave the room.
   if (typeof cb == 'undefined') { cb=function(){}; }
   clearInterval(this.pingTimer);
-  clearInterval(this.getMessagesTimer);
+  clearInterval(this.messagePollTimer);
   this.boardGet({
         app: 'ipchat',
         module: 'ipschat',
@@ -263,9 +266,11 @@ IpsChat.prototype.leave = function(cb) {
 IpsChat.prototype.messageRecieved = function(msg, username, userId, timestamp) {
   if (!(username in this.users)) {
     this.userCount++;
-    this.users[username] = {uid: userId, name: username};
+    this.users[username] = {uid: userId, name: username, lastActivity: new Date()};
     this.emit('user_noticed', username, userId, timestamp);
   }
+  this.users[username].lastActivity = new Date();
+  // hmm. i donno, should we use timestamp?
   this.emit('message', msg, username, userId, timestamp);
 };
 IpsChat.prototype.userEnter = function(username, userId, forumId, group, ts) {
@@ -273,6 +278,7 @@ IpsChat.prototype.userEnter = function(username, userId, forumId, group, ts) {
     this.userCount++;
     this.users[username] = {uid: userId, name: username, forumId: forumId, group: group};
   }
+  this.users[username].lastActivity = new Date();
   this.emit('user_enter', username, userId, ts);
 };
 IpsChat.prototype.kickedUser = function(userId, uname) {

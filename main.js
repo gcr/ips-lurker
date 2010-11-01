@@ -10,7 +10,6 @@ var child_process = require('child_process'),
 
 
 // Log in and load plugins
-
 var login = JSON.parse(fs.readFileSync('./passwd').toString().trim());
 console.log("* Logging in "+login.user);
 

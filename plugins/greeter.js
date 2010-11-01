@@ -1,3 +1,8 @@
+/*
+ * greeter.js -- greets new people
+ *
+ * we'll greet new people and sometimes mourn those who leave
+ */
 var randomSay = require('../plugin_glue').randomSay;
 
 function randomChoice(arr) {
@@ -13,11 +18,14 @@ exports.init = function(chat) {
               "aw! "+username.toLowerCase()+" left...",
               "bye",
               "i'll miss you "+username.toLowerCase(),
-              [ "so as I was saying, "+username.toLowerCase().substr(0,4)+"---", username+"?", "aw he's gone"],
-              ["see ya", "he's gone"],
+              [ "so as I was saying, "+username.toLowerCase().substr(0,4)+"---", username+"?", "aw... gone"],
+              "see ya",
               "bye "+username.toLowerCase(),
               "noooooo~~~~~ "+username.toLowerCase()+" is gone",
-              "aw, I didn't get to say goodbye"
+              "aw, I didn't get to say goodbye",
+              "whaaat? "+username.toLowerCase()+" disappeared!",
+              "onoes! no more "+username.toLowerCase(),
+              "wait! waaaait!....."
             ]);
       }
     });
@@ -41,7 +49,6 @@ exports.init = function(chat) {
             "welcome back "+usr,
             "yaaay! "+usr+" is here!",
             "oh hey haven't seen you in a while!",
-            "hey! "+usr+" decided to hang with the cool kids now! ;)",
             "you're family, "+usr+"!",
             "ah, good morrow, "+usr+".",
             "you're one of us now, "+usr+"!",
@@ -67,12 +74,17 @@ exports.init = function(chat) {
             "are you a yeti, "+usr+"?",
             "uh oh, sherrif's in town!",
             "howdy, sherriff!",
+            "Bigfoot!",
             "ooh, the evil mastermind appears!",
             "A wild "+usr+" appears!",
+            "Christmas is coming soon, "+usr+"!",
+            "how was your day, "+usr+"?",
 
+            [ "went over to "+usr+"'s house the other day", "too bad "+usr+" didn't even notice me", ";)" ],
+            [ usr+" makes the BEST chicken noodle soup!", "got any for us?"],
             [ "when suddenly "+username.toUpperCase()+" APPEARS OUT OF NOWHERE", "and surprises everyone!"],
             [ "it's a bird!", "it's a plane!", "it's "+username.toUpperCase()+"!"],
-            [ "it's "+usr+"!", "*sniff* AND HE'S GOT PIZZA!", "can i have some pizza, "+usr+"?"],
+            [ "it's "+usr+"!", "*sniff* AND "+username.toUpperCase()+"'S GOT PIZZA!", "can i have some pizza, "+usr+"?"],
             [ "happy to see us, "+usr+"?", "we're sure happy to see you!"],
             [ "HEY EVERYBODY! "+usr+"'s here!",
               "the party can begin now!"],
@@ -80,8 +92,8 @@ exports.init = function(chat) {
               "wait, that's not jbug!",
               "oh hi "+usr+" i thought you were jbug, heh"],
             [ "Ahoy, "+username+"!", "How are things going?"],
-            [ "Arrrgh, it be "+username+", sailin' the high seas again, arrr.",
-              "Got any treasure for ol' lurker now, arr?" ],
+//          [ "Arrrgh, it be "+username+", sailin' the high seas again, arrr.",
+//            "Got any treasure for ol' lurker now, arr?" ],
             [ "sup "+usr,
               "how's it goin?" ],
             [ "oh hey "+usr,

@@ -1,9 +1,16 @@
 // lyric picker
 
 var fs = require('fs'),
-    LYRIC_FILE = "plugins/hangman/data",
-    IGNORE_RECENT = 20,
+    LYRIC_FILE = "plugins/hangman/data.tex",
+    RECENT_FILE = 'plugins/hangman/recent.json',
+    IGNORE_RECENT = 200, // we have above 350
     recent = [];
+
+try {
+  recent = JSON.parse(fs.readFileSync(RECENT_FILE).toString().trim()).recent;
+} catch(err) {
+  console.log(err);
+}
 
 exports.withRandomLyric = function(cb) {
   // eventually call cb with a random lyric from above
@@ -13,17 +20,22 @@ exports.withRandomLyric = function(cb) {
                        .trim()
                        .split('\n')
                        .map(function(x){return x.trim();})
+                       .filter(function(x){return (/\%/).exec(x) === null;})
                        .filter(function(x){return x.length;}),
-          lyric = lyrics[Math.ceil(Math.random()*lyrics.length)];
-      if (recent.indexOf(lyric) !== -1) {
-        return arguments.callee(err, data);
-      } else {
-        console.log(recent);
-        recent.push(lyric);
-        if (recent.length > IGNORE_RECENT) {
-          recent.unshift();
-        }
-        cb(lyric);
+          lyric = lyrics[Math.floor(Math.random()*lyrics.length)];
+      while (recent.indexOf(lyric) !== -1 || lyric === null) {
+        console.log("Found recent lyric: "+lyric+", trying again");
+        lyric = lyrics[Math.floor(Math.random()*lyrics.length)];
+      } 
+      recent.push(lyric);
+      while (recent.length > IGNORE_RECENT) {
+        recent.shift(); // HAHA WHOOOPSIE this read 'unshift' before, can you find the bug?
       }
+      // save recent
+      fs.writeFile(RECENT_FILE, JSON.stringify({recent: recent}), function(err) {
+          if (err) {console.log(err);}
+          cb(lyric);
+        });
+
     });
 };
