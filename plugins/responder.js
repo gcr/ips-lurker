@@ -63,13 +63,12 @@ exports.init = function(chat) {
             "farewell"
           ]);
       } else if (Math.random()<0.2 && msg.match(/\bbear/i)) {
-        randomSay([
-            "BEARS?!",
-            ["bears?", "where?"],
-            "UH OH! bears!",
-            ["uh oh!", "a bear?"],
-            "YETI"
-          ]);
+        randomSay(["BEARS?!",
+                  ["bears?", "where?"],
+                  "UH OH! bears!",
+                  ["uh oh!", "a bear?"],
+                  "YETI"
+                  ]);
       } else if (msg.match(/lurker/i)) {
         // messages meant for us
         if (msg.match(/bye/i) || // they're saying bye to me
@@ -139,7 +138,15 @@ exports.init = function(chat) {
               "hey, being a bot's tough",
               [ "I was a great programming exercise", "probably the only exercise my creator ever got, heh"],
               "just tell me to be quiet if I annoy you."
-         ]);
+          ]);
+        } else if (msg.match(/\bthank/i)) {
+          randomSay(["you're welcome, "+usr+"!",
+                     "welcome!",
+                     "you're welcome!",
+                     "welcomes!",
+                     "welcome, "+usr+"!",
+                     "welkumz!"
+                   ]);
         } else if (msg.match(/danger/i) || msg.match(/caution/i)) {
           chat.say("Danger? Hah! I laugh in the face of danger!");
         } else if (msg.match(/\blove/i) ||
@@ -218,6 +225,12 @@ exports.init = function(chat) {
           randomSay([
                 "lol", "lol", "lol",
                 "derp!",
+                "haha!", "haha", "heehee",
+                "mruahahah,"+usr+" never suspects my plans",
+                "the disguise is working properly, I see",
+                "nyeeeheheheh",
+                "heh heh heh",
+                "if only you knew, "+usr,
                 "beep?",
                 [ "beep?", "beep beep!"],
                 "BWOOOP",
@@ -239,6 +252,8 @@ exports.init = function(chat) {
                 "that's me!",
                 "over here",
                 "right here",
+                "meh",
+                "heh", "heh", "heh",
                 "right here, "+usr,
                 "yo!",
                 "uh... yes?",
