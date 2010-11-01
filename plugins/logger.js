@@ -42,6 +42,9 @@ exports.init = function(chat) {
   chat.on('user_enter', lockProtect(function(username) {
       console.log(formatDate()+attn+blue(username+" joined"));
     }));
+  chat.on('settled', lockProtect(function() {
+      console.log(formatDate()+attn+blue("Join to chat synchronized."));
+    }));
   chat.on('user_exit', lockProtect(function(username) {
       console.log(formatDate()+attn+blue(username+" left"));
     }));
