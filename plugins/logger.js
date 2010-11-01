@@ -27,11 +27,11 @@ exports.init = function(chat) {
   chat.on('system_message', lockProtect(function(msg) {
       console.log(formatDate()+attn+blue(msg));
     }));
-  chat.on('user_noticed', lockProtect(function(username, uid) {
-      console.log(formatDate()+attn+blue("just noticed "+username+" with uid "+uid));
+  chat.on('user_noticed', lockProtect(function(username) {
+      console.log(formatDate()+attn+blue("just noticed "+username));
     }));
-  chat.on('user_enter', lockProtect(function(username, uid) {
-      console.log(formatDate()+attn+blue(username+" joined with uid"+uid));
+  chat.on('user_enter', lockProtect(function(username) {
+      console.log(formatDate()+attn+blue(username+" joined"));
     }));
   chat.on('user_exit', lockProtect(function(username) {
       console.log(formatDate()+attn+blue(username+" left"));
