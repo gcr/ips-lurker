@@ -22,7 +22,7 @@ exports.init = function(chat) {
       if (!chat.settled || uid == chat.userId) { return; }
 
       // look for youtubely URLs
-      var yturl = msg.match(/[w.]*youtube\.com\/watch\?v=([a-zA-Z0-9\-]+)/);
+      var yturl = msg.match(/[w.]*youtube\.com\/watch\?v=([a-zA-Z0-9\-_]+)/);
       if (yturl) {
         // request json from youtube
         // http://gdata.youtube.com/feeds/api/videos/6iVGnaBpBu4?&v=2&alt=jsonc
@@ -44,8 +44,8 @@ exports.init = function(chat) {
                      chat.debug(require('util').inspect(response));
                      chat.say(usr+": ^ that video is '"+
                          response.data.title+"' ("+formatTime(response.data.duration)+")  with "+
-                         (response.data.viewCount+" views" || "no views") +
-                         (", "+response.data.likeCount+" likes" || "")
+                         (response.data.viewCount? response.data.viewCount+" views" : "no views") +
+                         (response.data.likeCount? ", "+response.data.likeCount+" likes" : "")
                      );
                    }
 
