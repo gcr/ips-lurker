@@ -13,7 +13,7 @@ var http = require('http'),
 
 function formatTime(sec) {
   // formatTime(175) => "2:55"
-  return Math.floor(sec/60) + ":" + (sec%60);
+  return Math.floor(sec/60) + ":" + "00".substr((""+(sec%60)).length) + (sec%60);
 }
 
 exports.init = function(chat) {
