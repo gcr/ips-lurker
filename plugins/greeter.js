@@ -76,6 +76,7 @@ exports.init = function(chat) {
             "careful "+usr+", I saw bears around here earlier",
             "are you a yeti, "+usr+"?",
             "uh oh, sherrif's in town!",
+            "POKEMANS! let me show you them, "+usr+"!!!1",
             "howdy, sherriff!",
             "Bigfoot!",
             "ooh, the evil mastermind appears!",
@@ -83,7 +84,7 @@ exports.init = function(chat) {
             "Christmas is coming soon, "+usr+"!",
             "how was your day, "+usr+"?",
 
-            [ "went over to "+usr+"'s house the other day", "too bad "+usr+" didn't even notice me", ";)" ],
+            //[ "went over to "+usr+"'s house the other day", "too bad "+usr+" didn't even notice me", ";)" ],
             [ usr+" makes the BEST chicken noodle soup!", "got any for us?"],
             [ "when suddenly "+username.toUpperCase()+" APPEARS OUT OF NOWHERE", "and surprises everyone!"],
             [ "it's a bird!", "it's a plane!", "it's "+username.toUpperCase()+"!"],

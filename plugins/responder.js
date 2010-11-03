@@ -119,6 +119,7 @@ exports.init = function(chat) {
               [ "humans can be pretty silly too, "+usr, "remember that"],
               "I should have studied harder for my turing test!",
               "yeah, I can get annoying sometimes. tell me to be quiet and I'll oblige",
+              [ "I keep telling my friends I don't like averages because they're kinda mean.", "None of them get it."],
               "I just want a pony...",
               [ "well at least I'm not HUMAN!", "like "+username.toUpperCase()+"!"],
               "why can't I be like those wonderful IRC bots?",
@@ -165,6 +166,8 @@ exports.init = function(chat) {
               [usr+" and lurker sittin in a tree", "wait! ew"],
               "<3",
               "d'awwwww!",
+              "*grin*",
+              "aw, you're nice!",
               "lurv lurv lurv !!!!",
               "awwww "+usr+" is too kind",
               "lurv ya too "+usr
@@ -199,7 +202,7 @@ exports.init = function(chat) {
               "always been quite partial to blue crunchy brocoli spinach Face Up",
               "not sure, I like them all"
             ]);
-        } else if (msg.match(/what.*\?/i)) {
+        } else if (msg.match(/what.*\?/i) && !msg.match(/\bup\b/)) {
           randomSay([
               "I dunno but it sure had better be good",
               "why, it's merely "+randomChoice([
@@ -257,18 +260,47 @@ exports.init = function(chat) {
                 "right here, "+usr,
                 "yo!",
                 "uh... yes?",
-                "I never passed my turing test, "+usr+", I have no clue what you are saying",
                 "i don't know what you just said because I was thinking of batman!",
-                "are you trying to tell me something?",
                 "am I a bear?",
                 "YETIS! help",
                 "hmm?",
                 "...",
+                "It caught me by surprise: A laser snake, fangs dripping with deadly photons.",
                 "sorry, can't talk; zombies!",
                 "uh oh, you found me",
                 "OH NO! a bear behind you, "+usr+"!!",
                 "i don't know, i'm just a bot",
-                "i'm just a bot"
+                "i'm just a bot",
+
+                // thhanks, mr. why!
+                // http://viewsourcecode.org/why/twitter/lastTweets.html
+                "sitting on the balcony, hiding in tatyana tolstaya stories, sticking around for the collapse of this fine old chair.",
+                "running at night is like spending quality time with infinity, only to find out it has a truckload of cul-de-sacs",
+                "anyone know how smooth the transition is from freelance prof to outlaw's assistant for a guy with no explosives expertise?",
+                "crap i don't know how to strike a match between my teeth",
+                "a girl's measurements should be: pupil size in picas, warmth of breath in kelvin and diary page count. now, add it up and tell ((no one)).",
+                "hmm wondering about the repercussions for lying about having a powderhorn",
+                [ "my friend keeps his sandwich in a holder which, by all appearances, is itself a sandwich.",
+                  "would that everything had such a container."],
+                [ "ever notice when the trees sound like they're whispering?",
+                  "you have be listening to notice."],
+                "rocking the boat? or rocking the casbah?",
+                "trolling on reddit. i totally have soviet russia all queued up.",
+                [ "singing 'eight days a week' to my dog.", "oh man, she absolutely hates this."],
+                "it's fantastic how beets stain a salad.",
+                "they say a very small dose of deadly nightshade will widen the pupils",
+                "palms to the temples, kneeling on the floor, nostrils flared is the universal sign for 'i asked that this photo stay off the internet.'",
+                "i want to see apple put out a christmas macbook made of white chocolate just so i can hear you nerds defend it.",
+                "the sky is doing gradients. lame!",
+                "drawing a little crab in pencil on the wall and it looks like it's standing on wayne's shelf next to his hammer",
+                "please treat this, and all future correspondence, as marked urgent.",
+                "looking for the link to that one web page where they show you how to hide in your own shoe (for no charge at all)",
+                [ "bored, gonna wander that side street where the art supply store is.", "maybe i can fill up their pad used to test pens with erratic poetry."],
+                [ "be my one-millionth friend and win a free telephone pole of your choosing.", "i will also light a match for lung cancer."],
+                [ "door-to-door kids selling broken candy canes.", "when i asked them how much, they said we don't know.", "i gave them $1 for the whole bag."],
+                "blehhh so sick of being me. i just need some occasional hiatus as a matador or a simple cone-hatted guy on stilts.",
+                [ "drawing chalk squares on the road, to coax along a local legend.", "somethin about a ghost limo that drops off boxes of used trombones, i forget" ],
+                "filling a wall with nature scenes: romanticized squid fights, foxes beneath an aurora, frogs enjoying an opulent constellation-ridden night."
               ]);
         }
       }

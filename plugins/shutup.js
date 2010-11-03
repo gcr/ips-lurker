@@ -110,7 +110,7 @@ exports.init = function(chat) {
       if (!left) {
         timeout = Math.max(timeout * DECAY, START_OUT);
         if (timeout != START_OUT) {
-          chat.debug("decay now",timeout);
+          chat.debug("decay now "+timeout);
         }
       }
     }, DECAY_TIME*60*1000);
