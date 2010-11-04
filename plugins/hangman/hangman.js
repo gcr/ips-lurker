@@ -72,13 +72,13 @@ exports.init = function(chat ) {
               ])+
             " The answer was '"+target+"' You got it in "+sec+" sec! (that's "+secPerLtr+" sec/letter)");
           g.stop();
-          winner.won(chat, usr, countNotAfk());
+          winner.won(chat, usr, countNotAfk(), sec, secPerLtr);
         }
       });
     g.start();
 
     chat.say((winner.streak() >=3 ? "Finish this lyric before "+winner.champion()+" does:" :
-                                       "Finish this lyric before I do:"),
+                                    "Finish this lyric before I do:"),
       function() {
         chat.say(g.toString());
       });
@@ -116,6 +116,7 @@ exports.init = function(chat ) {
          (msg.match(/yes/i) ||
           msg.match(/yep/i) ||
           msg.match(/yeah/i) ||
+          msg.match(/\bsi\b/i) ||
           msg.match(/totally/i) ||
           msg.match(/activate/i) ||
           msg.match(/yse/i) ||

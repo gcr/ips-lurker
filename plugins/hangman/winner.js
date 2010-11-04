@@ -7,15 +7,21 @@ var randomSay = require('../../plugin_glue').randomSay,
 
 // for now, only track the winner a little
 var champion = null,
-    streak = 0;
+    streak = 0,
+
+    logData = []; // not sure what I'll do with this
+                  // maybe have [ { winner: user obj,
+                  //                time: time,
+                  //                others: chat.users }, ... ]
 
 try {
   var r = JSON.parse(fs.readFileSync(WINNERS_FILE).toString().trim());
-  champion = r.champion; streak = r.streak;
+  champion = r.champion||null; streak = r.streak; logData = r.logData||[];
 } catch(err) {
 }
 
-function won(chat, user, nusers) {
+function won(chat, user, nusers, sec, secPerLtr) {
+  logData.push({winner: user, sec: sec, time: new Date(), secPerLtr: secPerLtr, others: chat.users});
   if (user == champion) {
     // user won!
     streak++;
@@ -25,7 +31,7 @@ function won(chat, user, nusers) {
               "that's the second time "+user+" won!",
               "looks like "+user+" won again",
               user+" won again!!",
-              "of coruse, "+user+" takes the cake again"
+              "of course, "+user+" takes the cake again"
             ]);
             break;
         case 3:
@@ -126,7 +132,7 @@ function won(chat, user, nusers) {
     streak = 1;
     champion = user;
   }
-  fs.writeFile(WINNERS_FILE, JSON.stringify({champion: champion, streak: streak}));
+  fs.writeFile(WINNERS_FILE, JSON.stringify({champion: champion, streak: streak, logData: logData}));
 }
 
 function announce(chat, nusers) {

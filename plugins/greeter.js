@@ -18,7 +18,7 @@ exports.init = function(chat) {
               "aw! "+username.toLowerCase()+" left...",
               "bye",
               "i'll miss you "+username.toLowerCase(),
-              [ "so as I was saying, "+username.toLowerCase().substr(0,4)+"---", username+"?", "aw... gone"],
+              [ "so as I was saying, "+username.toLowerCase().substr(0,4)+"---", username+"?", "aw... too late :/"],
               "see ya",
               "bye "+username.toLowerCase(),
               "noooooo~~~~~ "+username.toLowerCase()+" is gone",
