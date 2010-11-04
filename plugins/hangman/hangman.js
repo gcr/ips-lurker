@@ -77,7 +77,7 @@ exports.init = function(chat ) {
       });
     g.start();
 
-    chat.say(('Elamind' in chat.users? "Finish this lyric before Elamind does:" :
+    chat.say((winner.streak() >=3 ? "Finish this lyric before "+winner.champion()+" does:" :
                                        "Finish this lyric before I do:"),
       function() {
         chat.say(g.toString());
@@ -121,6 +121,7 @@ exports.init = function(chat ) {
           msg.match(/yse/i) ||
           msg.match(/sey/i) ||
           msg.match(/sye/i) ||
+          msg.match(/okay/i) ||
           msg.match(/\bo[. ]*k\b/i) ||
           msg.match(/sure/i) ||
           msg.match(/\bme\b/i) ||

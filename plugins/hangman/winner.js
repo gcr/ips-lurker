@@ -15,7 +15,6 @@ try {
 } catch(err) {
 }
 
-
 function won(chat, user, nusers) {
   if (user == champion) {
     // user won!
@@ -182,6 +181,9 @@ function announce(chat, nusers) {
     }
   }
 }
+
+exports.champion = function() { return champion; };
+exports.streak = function() { return streak; };
 
 exports.won = won;
 exports.announce = announce;

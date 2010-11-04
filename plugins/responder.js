@@ -278,7 +278,7 @@ exports.init = function(chat) {
                 "running at night is like spending quality time with infinity, only to find out it has a truckload of cul-de-sacs",
                 "anyone know how smooth the transition is from freelance prof to outlaw's assistant for a guy with no explosives expertise?",
                 "crap i don't know how to strike a match between my teeth",
-                "a girl's measurements should be: pupil size in picas, warmth of breath in kelvin and diary page count. now, add it up and tell ((no one)).",
+                //"a girl's measurements should be: pupil size in picas, warmth of breath in kelvin and diary page count. now, add it up and tell ((no one)).",
                 "hmm wondering about the repercussions for lying about having a powderhorn",
                 [ "my friend keeps his sandwich in a holder which, by all appearances, is itself a sandwich.",
                   "would that everything had such a container."],
