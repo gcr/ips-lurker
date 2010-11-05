@@ -1,3 +1,4 @@
+/*jslint regexp: false */
 /* sometimes when writing plugins,
  * you need to ensure that they don't trample all over themselves.
  * for example, when you're writing a game, then when you go into 'game mode'
@@ -38,6 +39,20 @@ exports.randomSay = function(sayings) {
     chat.say(saying);
   }
 };
+
+function countNotAfk(threshhold) {
+  // count the users that typed things in the last threshhold minutes
+  var afk=0;
+  for (var usr in chat.users) {
+    if (chat.users.hasOwnProperty(usr)) {
+      if ((new Date() - chat.users[usr].lastActivity)/1000 < threshhold*60) {
+        afk++;
+      }
+    }
+  }
+  return afk;
+}
+exports.countNotAfk = countNotAfk;
 
 // now locking!
 //
@@ -125,3 +140,61 @@ exports.lockProtect = function(fun) {
   return fun;
 };
 exports.locked = function(){ return locked; };
+
+
+// VOTING
+// This function allows you to play games based on voting.
+exports.vote = function(needed, afkThresh, voteThresh, prompt, timeout, firstUser, cb, noCb) {
+  // If we have less than voteThresh people, just run cb straight away
+  // Else, hold a vote by saying 'prompt' and run cb when we have 'needed' many voters.
+  // If we time out, run noCb() instead.
+  // Please pass in the first user (the one who triggered the vote) so we can
+  // count them also.
+  if (countNotAfk(afkThresh)<voteThresh) {
+    cb();
+  } else {
+    chat.say(prompt, function(){
+        var wantingToPlay = {};
+        wantingToPlay[firstUser] = true;
+        needed--;
+        var messageHandler;
+        var nobodyWantsToPlay = setTimeout(function() {
+            // nobody wanted to try
+            chat.removeListener('message', messageHandler);
+            noCb();
+          }, timeout*1000);
+        messageHandler = function(msg, user, uid) {
+          if (!chat.settled || uid == chat.userId) { return; }
+          chat.debug("messageHandler");
+          // Wait for people to say 'yes'
+          if (!(user in wantingToPlay) &&
+             (msg.match(/yes/i) ||
+              msg.match(/yep/i) ||
+              msg.match(/yeah/i) ||
+              msg.match(/\bsi\b/i) ||
+              msg.match(/totally/i) ||
+              msg.match(/activate/i) ||
+              msg.match(/yse/i) ||
+              msg.match(/sey/i) ||
+              msg.match(/sye/i) ||
+              msg.match(/okay/i) ||
+              msg.match(/\bo[. ]*k\b/i) ||
+              msg.match(/sure/i) ||
+              msg.match(/\bme\b/i) ||
+              msg.match(/why not/i) ||
+              msg.match(/play/i) ||
+              msg.match(/i.?m in/i))) {
+            needed--;
+            wantingToPlay[user] = true;
+            chat.debug(wantingToPlay);
+            chat.debug("need "+needed+" more");
+          }
+          if (needed<=0) {
+            chat.removeListener('message', messageHandler);
+            cb();
+          }
+        };
+        chat.on('message', messageHandler);
+    });
+  }
+};

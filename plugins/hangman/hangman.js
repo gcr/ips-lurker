@@ -1,6 +1,7 @@
 /*jslint regexp: false */
 var Game = require('./game').Game,
     pluginGlue = require('../../plugin_glue'),
+    countNotAfk = pluginGlue.countNotAfk,
     randomSay = pluginGlue.randomSay,
     lyricPicker = require('./lyric_picker'),
     winner = require('./winner'),
@@ -11,7 +12,7 @@ var Game = require('./game').Game,
     LETTER_LOOSENESS = 3,      // answer accepted if it's in this tolerance
     VOTE_START_FACTOR = 0.5,   // need this many times number of users to start
     VOTE_THRESHHOLD = 4,       // if there are >= this many active users, a vote is needed
-    VOTE_TIMEOUT_PER_USER = 5; // voting times out in this*user count seconds
+    VOTE_TIMEOUT_PER_USER = 6; // voting times out in this*user count seconds
 
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
@@ -23,18 +24,6 @@ var timer = null,
 exports.init = function(chat ) {
 
   // beginning and ending the game
-  function countNotAfk() {
-    // count the users that typed things in the last AFK_THRESHHOLD minutes
-    var afk=0;
-    for (var usr in chat.users) {
-      if (chat.users.hasOwnProperty(usr)) {
-        if ((new Date() - chat.users[usr].lastActivity)/1000 < AFK_THRESHHOLD*60) {
-          afk++;
-        }
-      }
-    }
-    return afk;
-  }
 
   function endGame() {
     chat.debug("endGame called");
@@ -72,7 +61,7 @@ exports.init = function(chat ) {
               ])+
             " The answer was '"+target+"' You got it in "+sec+" sec! (that's "+secPerLtr+" sec/letter)");
           g.stop();
-          winner.won(chat, usr, countNotAfk(), sec, secPerLtr);
+          winner.won(chat, usr, countNotAfk(AFK_THRESHHOLD), sec, secPerLtr);
         }
       });
     g.start();
@@ -85,102 +74,6 @@ exports.init = function(chat ) {
   }
 
 
-  // these functions are for getting things started.
-  function waitForUsers(target, firstUser) {
-    chat.debug("waitForUsers");
-    // wait for a bit for users to say yes
-    var needed = Math.floor(countNotAfk()*VOTE_START_FACTOR),
-        people = needed + (needed==1?" person":" people");
-    chat.debug(countNotAfk()+" not-afk users");
-    chat.say("[b]"+randomChoice([
-          "WHO WANTS HANGMAN? we need "+people,
-          "anyone up for a fine ol' game of Guess the Lyric? we want "+people,
-          "hangman anybody? i'll wait until we have "+people
-        ]) + "[/b] (say 'yes' if you want to play)");
-    var wantingToPlay = {};
-    wantingToPlay[firstUser] = true;
-    needed--;
-    var messageHandler;
-    var nobodyWantsToPlay = setTimeout(function() {
-        // nobody wanted to try
-        chat.debug("nobody wants to play");
-        chat.removeListener('message', messageHandler);
-        chat.say("we needed "+needed+" more; maybe later");
-        endGame();
-      }, VOTE_TIMEOUT_PER_USER*1000*countNotAfk());
-    messageHandler = function(msg, user, uid) {
-      if (!chat.settled || uid == chat.userId) { return; }
-      chat.debug("messageHandler");
-      // Wait for people to say 'yes'
-      if (!(user in wantingToPlay) &&
-         (msg.match(/yes/i) ||
-          msg.match(/yep/i) ||
-          msg.match(/yeah/i) ||
-          msg.match(/\bsi\b/i) ||
-          msg.match(/totally/i) ||
-          msg.match(/activate/i) ||
-          msg.match(/yse/i) ||
-          msg.match(/sey/i) ||
-          msg.match(/sye/i) ||
-          msg.match(/okay/i) ||
-          msg.match(/\bo[. ]*k\b/i) ||
-          msg.match(/sure/i) ||
-          msg.match(/\bme\b/i) ||
-          msg.match(/why not/i) ||
-          msg.match(/play/i) ||
-          msg.match(/i.?m in/i))) {
-        needed--;
-        wantingToPlay[user] = true;
-        chat.debug(wantingToPlay);
-        chat.debug("need "+needed+" more");
-      }
-      if (needed<=0) {
-        chat.debug("all ready");
-        chat.removeListener('message', messageHandler);
-        chat.say(randomChoice([
-              "OK, let's go.",
-              "Sure, we'll begin.",
-              "Shall we begin?",
-              "Hangman time!",
-              "Here we go!",
-              "Here it comes!",
-              "And we're off!",
-              "Ok, we'll start in a moment.",
-              "POWER UP! POWER UP!",
-              "WARNING: BOSS FIGHT COMMENCES",
-              "FINAL BOSS!",
-              "MISSILE LAUNCH DETECTED!",
-              "PREPARE YOURSELVES!",
-              "GET READY",
-              "GET READY TO RUMBLE!",
-              "INCOMING!"
-            ])+" Type the lyric when you know what it is.",
-          function(){ winner.announce(chat, countNotAfk());});
-        clearTimeout(nobodyWantsToPlay);
-        setTimeout(function() {
-            startHangman(target);
-          }, 5000);
-      }
-    };
-    chat.on('message', messageHandler);
-  }
-
-  function tryHangman(target, firstUser) {
-    if (!pluginGlue.lock()) { return; } // LOCK!!!
-    // lock chat, begin
-    chat.messagePollInterval = 500;
-    chat.resetTimers();
-
-    // ask if there are any objections
-    chat.debug("have "+countNotAfk()+" users");
-    if (countNotAfk()>=VOTE_THRESHHOLD) {
-      waitForUsers(target, firstUser);
-    } else {
-      // only two people? sure, go for it
-      startHangman(target);
-    }
-  }
-
   // chat trigger
   chat.on('message', function(msg, usr, uid) {
       if (uid == chat.userId || !chat.settled) { return; }
@@ -189,7 +82,51 @@ exports.init = function(chat ) {
           msg.match(/guess/i) && msg.match(/lyric/i))) {
 
         lyricPicker.withRandomLyric(chat, function(lyric) {
-            tryHangman(lyric, usr);
+            if (!pluginGlue.lock()) { return; } // LOCK!!!
+            // lock chat, begin
+            chat.messagePollInterval = 500;
+            chat.resetTimers();
+            var needed = Math.floor(countNotAfk(AFK_THRESHHOLD)*VOTE_START_FACTOR),
+                people = needed + (needed==1?" person":" people");
+              chat.debug("have "+countNotAfk(AFK_THRESHHOLD)+" users, need "+needed+" to play");
+              pluginGlue.vote(needed, AFK_THRESHHOLD, VOTE_THRESHHOLD, "[b]"+randomChoice([
+                  "WHO WANTS HANGMAN? we need "+people,
+                  "anyone up for a fine ol' game of Guess the Lyric? we want "+people,
+                  "hangman anybody? i'll wait until we have "+people
+                ]) + "[/b] (say 'yes' if you want to play)",
+                // timeout
+                VOTE_TIMEOUT_PER_USER*1000*countNotAfk(AFK_THRESHHOLD), usr,
+                // success callback
+                function start() {
+                  chat.debug("all ready");
+                  chat.say(randomChoice([
+                        "OK, let's go.",
+                        "Sure, we'll begin.",
+                        "Shall we begin?",
+                        "Hangman time!",
+                        "Here we go!",
+                        "Here it comes!",
+                        "And we're off!",
+                        "Ok, we'll start in a moment.",
+                        "POWER UP! POWER UP!",
+                        "WARNING: BOSS FIGHT COMMENCES",
+                        "FINAL BOSS!",
+                        "MISSILE LAUNCH DETECTED!",
+                        "PREPARE YOURSELVES!",
+                        "GET READY",
+                        "GET READY TO RUMBLE!",
+                        "INCOMING!"
+                      ])+" Type the lyric when you know what it is.",
+                    function(){ winner.announce(chat, countNotAfk(AFK_THRESHHOLD));});
+                  setTimeout(function() {
+                      startHangman(lyric);
+                    }, 5000);
+                },
+                // timeout callback
+                function nobodyWantedToPlay() {
+                  chat.say("we needed "+needed+" more; maybe later");
+                  endGame();
+                });
           });
         
       }
