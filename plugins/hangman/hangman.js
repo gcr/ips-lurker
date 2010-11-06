@@ -95,7 +95,7 @@ exports.init = function(chat ) {
                   "hangman anybody? i'll wait until we have "+people
                 ]) + "[/b] (say 'yes' if you want to play)",
                 // timeout
-                VOTE_TIMEOUT_PER_USER*1000*countNotAfk(AFK_THRESHHOLD), usr,
+                VOTE_TIMEOUT_PER_USER*countNotAfk(AFK_THRESHHOLD), usr,
                 // success callback
                 function start() {
                   chat.debug("all ready");
