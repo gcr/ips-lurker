@@ -19,8 +19,8 @@ exports.init = function(chat) {
     });
 
     twit.on('tweet', function(tweet) {
-        chat.debug("@"+tweet.user.screen_name+": " + tweet.text);
         if (twit.following.indexOf(tweet.user.id) != -1) {
+          chat.debug("@"+tweet.user.screen_name+": " + tweet.text);
           chat.say(randomChoice([
                 "beep beep! the twitters say ",
                 "coming through! the twitters say ",

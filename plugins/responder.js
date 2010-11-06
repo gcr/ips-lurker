@@ -267,6 +267,8 @@ exports.init = function(chat) {
                 "...",
                 "It caught me by surprise: A laser snake, fangs dripping with deadly photons.",
                 "sorry, can't talk; zombies!",
+                "haha! gotcha!",
+                "haha! gotcha, "+usr+"!",
                 "uh oh, you found me",
                 "OH NO! a bear behind you, "+usr+"!!",
                 "i don't know, i'm just a bot",
