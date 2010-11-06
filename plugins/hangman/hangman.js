@@ -43,7 +43,7 @@ exports.init = function(chat ) {
         chat.say(g.toString());
       });
     g.on('timeout', function() {
-        chat.say("The answer was " + g.target);
+        chat.say("The answer was '"+g.target+"'");
       });
     g.on('stop', function() { chat.debug("game stopped"); endGame(); });
 
