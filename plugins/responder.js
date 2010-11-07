@@ -75,6 +75,8 @@ exports.init = function(chat) {
             msg.match(/good night/i) ||
             msg.match(/\bbai\b/i) ||
             msg.match(/see ya/i) ||
+            msg.match(/\bcya\b/i) ||
+            msg.match(/\bc'? ?ya\b/i) || //'
             msg.match(/see you/i) ||
             msg.match(/later/i) ||
             msg.match(/take care/i) ||
@@ -217,6 +219,22 @@ exports.init = function(chat) {
               "dude, your guess is as good as mine",
               "haven't the foggiest",
               "8-ball says: 'Wait and see!'"
+            ]);
+        } else if (msg.match(/smoothie|milkshake|sandwich|coffee|latte|beef jerky|jerky|chicken|cookies|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)) {
+          var food = msg.match(/smoothie|milkshake|sandwich|coffee|latte|beef jerky|jerky|chicken|cookies|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)[0];
+          randomSay([
+              "one "+food+" coming right up...",
+              "OK GIMME A SEC",
+              ["wait, "+food+"?? serious?", "you *do* want to live past 30, right?"],
+              "What? Go make it yourself, "+usr+"!",
+              usr+' is not in the [url="http://xkcd.com/149/"]sudoers file[/url]. This incident will be reported.',
+              "YUMMMMM! anyone but "+usr+" want a "+food+"???",
+              "ok, making "+food+", be right back",
+              "ok, making "+food+", anyone else want some?",
+              "I'm sorry, "+usr+", I cannot do that.",
+              "ONE poisoned "+food+", coming right up!",
+              "ewwwww, that's nasty, I only know how to make [i]good[/i] foods",
+              "YUM! i'll get that "+food+" right away!"
             ]);
         } else if (msg.match(/\bis.*\?/i)) {
           randomSay([
