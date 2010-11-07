@@ -91,9 +91,11 @@ exports.init = function(chat ) {
                 people = needed + (needed==1?" person":" people");
               chat.debug("have "+countNotAfk(AFK_THRESHHOLD)+" users, need "+needed+" to play");
               pluginGlue.vote(needed, AFK_THRESHHOLD, VOTE_THRESHHOLD, "[b]"+randomChoice([
-                  "WHO WANTS HANGMAN? we need "+people,
+                  "WHO WANTS GUESS THE LYRIC? we need "+people,
                   "anyone up for a fine ol' game of Guess the Lyric? we want "+people,
-                  "hangman anybody? i'll wait until we have "+people
+                  "Hey guys! Let's play guess the lyric! We need "+people,
+                  "GUESS THE LYRIC! i'll wait for "+people,
+                  "guess the lyric anybody? i'll wait until we have "+people
                 ]) + "[/b] (say 'yes' if you want to play)",
                 // timeout
                 VOTE_TIMEOUT_PER_USER*countNotAfk(AFK_THRESHHOLD), usr,

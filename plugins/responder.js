@@ -25,6 +25,8 @@ exports.init = function(chat) {
         msg.match(/good night/i) ||
         msg.match(/\bbai\b/i) ||
         msg.match(/good night/i) ||
+        msg.match(/gtg/i) ||
+        msg.match(/g2g/i) ||
         msg.match(/have a good one/i) ||
         msg.match(/\bbrb\b/i) ||
         msg.match(/\blaterz\b/i) ||
@@ -75,6 +77,8 @@ exports.init = function(chat) {
             msg.match(/good night/i) ||
             msg.match(/\bbai\b/i) ||
             msg.match(/see ya/i) ||
+            msg.match(/gtg/i) ||
+            msg.match(/g2g/i) ||
             msg.match(/\bcya\b/i) ||
             msg.match(/\bc'? ?ya\b/i) || //'
             msg.match(/see you/i) ||
