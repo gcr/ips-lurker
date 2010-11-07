@@ -191,6 +191,7 @@ exports.vote = function(needed, afkThresh, voteThresh, prompt, timeout, firstUse
           }
           if (needed<=0) {
             chat.removeListener('message', messageHandler);
+            clearTimeout(nobodyWantsToPlay);
             cb();
           }
         };
