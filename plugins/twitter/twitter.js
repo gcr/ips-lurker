@@ -88,6 +88,7 @@ exports.init = function(chat) {
             res.on('data',function(data){body+=data;})
                .on('end', function(end) {
                  var user = JSON.parse(body.toString().trim());
+                 chat.debug(require('util').inspect(user));
                  if (!(user.error)) {
                    chat.say(sender+":"+
                      ' [b]@'+uname+'[/b]'+
