@@ -66,8 +66,9 @@ exports.init = function(chat ) {
       });
     g.start();
 
-    chat.say((winner.streak() >=3 ? "Finish this lyric before "+winner.champion()+" does:" :
-                                    "Finish this lyric before I do:"),
+    chat.say((winner.streak() >=3 && winner.champion() in chat.users?
+        "Finish this lyric before "+winner.champion()+" does:" :
+        "Finish this lyric before I do:"),
       function() {
         chat.say(g.toString());
       });
