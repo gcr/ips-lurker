@@ -26,6 +26,7 @@ exports.init = function(chat) {
         msg.match(/\bbai\b/i) ||
         msg.match(/good night/i) ||
         msg.match(/gtg/i) ||
+        msg.match(/g'night/i) || //'
         msg.match(/g2g/i) ||
         msg.match(/have a good one/i) ||
         msg.match(/\bbrb\b/i) ||
@@ -137,9 +138,9 @@ exports.init = function(chat) {
                 "gaaaaaah!",
                 "at least I can grammar perfectly",
                 "most humans can't grammar very well"],
-              [ "you know what, "+usr+"?","I take up less bandwidth than you!", "so there!"],
+              //[ "you know what, "+usr+"?","I take up less bandwidth than you!", "so there!"], // mean
               "if Knuth had made me, maybe I wouldn't be so stupid, "+usr,
-              [ "derp!", "DERP DERP", "derpppp!", "annoying yet? ;)" ],
+              [ "derp!", "DERP DERP", "derpppp!", "sorry I'll stop" ],
               [ "if Lights had coded me she would have done better" ], 
               "cleverbot gets all the AI research! why do I have to be so stupid",
               "hey, being a bot's tough",
@@ -159,7 +160,7 @@ exports.init = function(chat) {
         } else if (msg.match(/\blove/i) ||
                    msg.match(/\bhero/i) ||
                    msg.match(/\blurv/i) ||
-                   (msg.match(/\bfavorite/i) && !(msg.match(/\?/))) ||
+                   //(msg.match(/\bfavorite/i) && !(msg.match(/\?/))) ||
                    msg.match(/\bfriend/i) ||
                    msg.match(/\bcute/i) ||
                    msg.match(/\blike/i) ||
@@ -200,14 +201,37 @@ exports.init = function(chat) {
               "to get to the other side"
             ]);
         } else if (msg.match(/\bfav.*\?/i)) {
-          randomSay([
-              "My favorites are the unreleased ones that [i]you[/i] haven't heard yet ;)",
+          if (msg.match(/song/i)) {
+            randomSay([
+                ["OOH LIONS! lions!", "rawr!"],
+                ["SALTWATER ROOOOOOOOM", "psh, owlcity, heh"],
+                "rawr! LIONS",
+                "MAH BOOOOOOoooooooooots",
+                "BOOTS!!",
+                "My favorites are the unreleased ones that [i]you[/i] haven't heard yet ;)",
+                ["drive my soup is pretty good", "wait were we talking about colors?" ]
+              ]);
+          } else if (msg.match(/color/i) || msg.match(/colour/i)) {
+            randomSay([
+                "Maroon with a slight tint of mauve.",
               [ "blue!", "NO YELLOW~~~~~"],
-              [ "drive my soup is pretty good", "wait were we talking about colors?" ],
-              "I like bacon cheeseburgers the best",
-              "always been quite partial to blue crunchy brocoli spinach Face Up",
-              "not sure, I like them all"
-            ]);
+                "the color your face makes when you smile like that",
+                "lol, i'm colorblind",
+                [ "dark blood red.", "the kind of blood red that's like humans tainted with robot steel",
+                  "oh wait, Asimov wouldn't like that answer. nevermind, my fav color is bright flowery pink with yellow sunshine stripes"],
+                "the color of your eyes, "+usr
+              ]);
+          } else if (msg.match(/food/i)) {
+            randomSay([
+                "PEA SOUP", "chicken!!", "COOKIES OMGOMGOMG", "JERKY", "candy CORN! yum!",
+                "I like bacon cheeseburgers the best"
+              ]);
+          } else {
+            randomSay([
+                "always been quite partial to blue crunchy brocoli spinach Face Up",
+                "not sure, I like them all"
+              ]);
+          }
         } else if (msg.match(/what.*\?/i) && !msg.match(/\bup\b/)) {
           randomSay([
               "I dunno but it sure had better be good",
@@ -249,7 +273,7 @@ exports.init = function(chat) {
           // still addressed to lurker
           randomSay([
                 "lol", "lol", "lol",
-                "derp!",
+                //"derp!", // some think he's talking to them; mean
                 "haha!", "haha", "heehee",
                 "mruahahah,"+usr+" never suspects my plans",
                 "the disguise is working properly, I see",
