@@ -150,3 +150,4 @@ function countDifferences(a, b) {
 }
 
 exports.countDifferences = countDifferences;
+exports.diff = diff;

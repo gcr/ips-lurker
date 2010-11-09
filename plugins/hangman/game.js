@@ -56,13 +56,27 @@ Game.prototype.toString = function() {
       return char;
     }).join(' ');
 };
-
+function compare(probe, gallery) {
+  var target = gallery.toLowerCase().replace(/[^a-zA-Z]/g, '');
+  probe = probe.toLowerCase().replace(/[^a-zA-Z]/g, '');
+  // todo: to do this properly, we should traverse the entire permutation 'tree'
+  // of possible substitutions. but this should be fine for now.
+  // try ambiguous words
+  return Math.min(
+      countDifferences(target, probe),
+      countDifferences(target.replace(/wanna/g,'wantto'), probe),
+      countDifferences(target.replace(/wantto/g,'wanna'), probe),
+      countDifferences(target.replace(/come/g,'can'), probe),
+      countDifferences(target.replace(/can/g,'come'), probe),
+      countDifferences(target.replace(/crimson/g,'silver'), probe),
+      countDifferences(target.replace(/silver/g,'crimson'), probe),
+      countDifferences(target.replace(/and/g,''), probe),
+      countDifferences("and"+target, probe)
+  );
+}
 Game.prototype.tryMatch = function(probe) {
   // return true if it matches
-  var target = this.target.toLowerCase().replace(/[^a-zA-Z]/g, '');
-  probe = probe.toLowerCase().replace(/[^a-zA-Z]/g, '');
-  return (countDifferences(target, probe) <=
-      Math.min(this.threshhold, this.hidden.length/3));
+  return compare(probe, this.target) <= Math.min(this.threshhold, this.hidden.length/3);
 };
 
 Game.prototype.step = function() {
@@ -97,3 +111,4 @@ Game.prototype.timeout = function() {
 
 
 exports.Game = Game;
+exports.compare = compare;

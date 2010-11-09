@@ -1,5 +1,6 @@
 /*jslint regexp: false */
 var Game = require('./game').Game,
+    compare = require('./game').compare,
     pluginGlue = require('../../plugin_glue'),
     countNotAfk = pluginGlue.countNotAfk,
     randomSay = pluginGlue.randomSay,
@@ -135,6 +136,19 @@ exports.init = function(chat ) {
       }
     });
 
+
+  // debug
+  chat.on('message', function(msg, usr, uid) {
+      if (uid == chat.userId || !chat.settled) { return; }
+      
+      var match = msg.match(/'.*?'/g) || msg.match(/".*?"/g);
+      if (msg.match(/compare/i) && match && match.length >= 2) {
+        chat.say(usr+", "+match[0]+" and "+match[1]+" are "+
+            compare(match[0].substr(1, match[0].length-2),
+                    match[1].substr(1, match[1].length-2))+
+            " letters apart.");
+      }
+    });
 };
 
 
