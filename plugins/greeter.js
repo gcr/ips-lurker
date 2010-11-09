@@ -16,6 +16,7 @@ exports.init = function(chat) {
         randomSay([
               "B--but wait! come back!",
               "aw! "+username.toLowerCase()+" left...",
+              "hey! "+username+", don't forget your----",
               "hey! wait ! don't forget your----",
               "DON'T FORGET YOUR COAT, "+username.toUpperCase()+"!!",
               "i'll miss you "+username.toLowerCase(),
