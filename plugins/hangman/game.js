@@ -66,6 +66,8 @@ function compare(probe, gallery) {
       countDifferences(target, probe),
       countDifferences(target.replace(/wanna/g,'wantto'), probe),
       countDifferences(target.replace(/wantto/g,'wanna'), probe),
+      countDifferences(target.replace(/gonna/g,'going to'), probe),
+      countDifferences(target.replace(/goingto/g,'gonna'), probe),
       countDifferences(target.replace(/come/g,'can'), probe),
       countDifferences(target.replace(/can/g,'come'), probe),
       countDifferences(target.replace(/crimson/g,'silver'), probe),

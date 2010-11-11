@@ -117,6 +117,9 @@ exports.init = function(chat ) {
                         "FINAL BOSS!",
                         "MISSILE LAUNCH DETECTED!",
                         "PREPARE YOURSELVES!",
+                        "GO GO GADGET!",
+                        "A WILD LYRIC APPEARS!",
+                        "POKEBALL GO!",
                         "GET READY",
                         "GET READY TO RUMBLE!",
                         "INCOMING!"
@@ -127,7 +130,7 @@ exports.init = function(chat ) {
                     }, 5000);
                 },
                 // timeout callback
-                function nobodyWantedToPlay() {
+                function nobodyWantedToPlay(needed) {
                   chat.say("we needed "+needed+" more; maybe later");
                   endGame();
                 });
