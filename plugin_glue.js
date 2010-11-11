@@ -161,7 +161,7 @@ exports.vote = function(needed, afkThresh, voteThresh, prompt, timeout, firstUse
         var nobodyWantsToPlay = setTimeout(function() {
             // nobody wanted to try
             chat.removeListener('message', messageHandler);
-            noCb();
+            noCb(needed);
           }, timeout*1000);
         messageHandler = function(msg, user, uid) {
           if (!chat.settled || uid == chat.userId) { return; }
