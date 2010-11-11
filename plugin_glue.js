@@ -171,6 +171,7 @@ exports.vote = function(needed, afkThresh, voteThresh, prompt, timeout, firstUse
              (msg.match(/yes/i) ||
               msg.match(/yep/i) ||
               msg.match(/yeah/i) ||
+              msg.match(/I will/i) ||
               msg.match(/\bsi\b/i) ||
               msg.match(/totally/i) ||
               msg.match(/activate/i) ||

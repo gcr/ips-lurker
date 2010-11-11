@@ -27,7 +27,10 @@ exports.init = function(chat) {
               "aw, I didn't get to say goodbye",
               "whaaat? "+username.toLowerCase()+" disappeared!",
               "onoes! no more "+username.toLowerCase(),
-              "wait! waaaait!....."
+              "wait! waaaait!.....",
+              username+" ran away !!",
+              "QUICK! GO CATCH "+username.toUpperCase(),
+              "Wow! "+username+" disappeared in a puff of smoke!"
             ]);
       }
     });
@@ -97,8 +100,11 @@ exports.init = function(chat) {
             "how was your day, "+usr+"?",
             "how ya been, "+usr+"?",
             "get into any trouble lately, "+usr+"?",
+            "Been hang gliding, "+usr+"?",
 
             //[ "went over to "+usr+"'s house the other day", "too bad "+usr+" didn't even notice me", ";)" ],
+            [ "[b]lurker[/b] uses [b]tail whip[/b]!", "It's super-effective !"],
+            [ "Oh? Thought you could be sneaky, eh?", usr+" couldn't sneak past ME! ;)"],
             [ usr+" makes the BEST chicken noodle soup!", "got any for us?"],
             [ "when suddenly "+username.toUpperCase()+" APPEARS OUT OF NOWHERE", "and surprises everyone!"],
             [ "hmm, wonder if "+usr+" will show up soon", "OH WAIT"],
