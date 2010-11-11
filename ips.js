@@ -55,6 +55,9 @@ function ipsLogin(boardUrl, user, pass, cb) {
           {'host': u.hostname});
     request.on('response', function (response) {
         var cookies = parseCookies(response.headers['set-cookie']);
+        //var data="";
+        //response.on('data', function(d){data+=d;});
+        //response.on('end', function(){console.log(data);});
         if (!('pass_hash' in cookies)) {
           cb(new Error("Username/password incorrect."));
         } else {
