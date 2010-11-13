@@ -77,7 +77,8 @@ exports.init = function(chat) {
     // escape hatch
     chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; }
-      if (msg.match(/candy/i) && msg.match(/yam/i)) {
+      if ((msg.match(/candy/i) && msg.match(/yam/i)) ||
+          (msg.match(/from/i) && msg.match(/colorado/i))) {
             // seekrit codes
             restorePower();
             timeout *= CANDYYAM_FACTOR;
