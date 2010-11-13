@@ -151,3 +151,7 @@ function countDifferences(a, b) {
 
 exports.countDifferences = countDifferences;
 exports.diff = diff;
+
+// this breaks SPECTACULARLY
+console.log(diff("itmustjutsbestressbutilikelyshouldntbehere",
+                 "itmustjustbestressbutilikelyshouldntbehere"));

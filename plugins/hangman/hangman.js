@@ -13,7 +13,7 @@ var Game = require('./game').Game,
     LETTER_LOOSENESS = 3,      // answer accepted if it's in this tolerance
     VOTE_START_FACTOR = 0.5,   // need this many times number of users to start
     VOTE_THRESHHOLD = 4,       // if there are >= this many active users, a vote is needed
-    VOTE_TIMEOUT_PER_USER = 6; // voting times out in this*user count seconds
+    VOTE_TIMEOUT_PER_USER = 8; // voting times out in this*user count seconds
 
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];
