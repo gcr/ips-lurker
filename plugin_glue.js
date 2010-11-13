@@ -30,8 +30,9 @@ exports.randomSay = function(sayings) {
     // say the sayings each a second or so apart
     (function say() {
       if (saying.length) {
-        chat.say(saying.shift());
-        setTimeout(say, 1500+Math.random()*2000);
+        chat.say(saying.shift(), function(){
+          setTimeout(say, 1500+Math.random()*2000);
+        });
       }
     })();
   } else {
