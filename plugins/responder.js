@@ -187,6 +187,7 @@ exports.init = function(chat) {
                    msg.match(/\bfriend/i) ||
                    msg.match(/\bcute/i) ||
                    msg.match(/\blike/i) ||
+                   msg.match(/smart/i) ||
                    msg.match(/\bsexy/i) ||
                    msg.match(/\bcool/i) ||
                    msg.match(/\bwub\b/i) ||
@@ -255,6 +256,17 @@ exports.init = function(chat) {
                 "not sure, I like them all"
               ]);
           }
+        } else if (msg.match(/where.*\?/i)) {
+            randomSay([
+                "Over THERE!",
+                "batman stole it, sorry",
+                "right behind you!",
+                "sorry, I ate it",
+                [ "in the closet", "right next to your knife collection" ],
+                "sorry, JtB stole it",
+                "in Canada, like all good things",
+                "where you least expect it ;)"
+              ]);
         } else if (msg.match(/what.*\?/i) && !msg.match(/\bup\b/)) {
           randomSay([
               "I dunno but it sure had better be good",
@@ -271,8 +283,8 @@ exports.init = function(chat) {
               "haven't the foggiest",
               "8-ball says: 'Wait and see!'"
             ]);
-        } else if (msg.match(/smoothie|milkshake|sandwich|coffee|latte|beef jerky|jerky|chicken|cookies|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)) {
-          var food = msg.match(/smoothie|milkshake|sandwich|coffee|latte|beef jerky|jerky|chicken|cookies|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)[0];
+        } else if (msg.match(/smoothie|milkshake|sandwich|drink|coffee|popcorn|tea|latte|beef jerky|jerky|chicken|cookies|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)) {
+          var food = msg.match(/smoothie|milkshake|sandwich|drink|coffee|popcorn|tea|latte|beef jerky|jerky|chicken|cookies|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)[0];
           randomSay([
               "one "+food+" coming right up...",
               "OK GIMME A SEC",
