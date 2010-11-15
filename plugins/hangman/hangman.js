@@ -8,7 +8,7 @@ var Game = require('./game').Game,
     winner = require('./winner'),
 
     AFK_THRESHHOLD = 3,        // minutes
-    STEP = 10000,              // ms
+    STEP = 10000,              // ms -- how often to reveal new letters
     REVEAL_LETTERS = 2,        // how many to reveal at a time
     LETTER_LOOSENESS = 3,      // answer accepted if it's in this tolerance
     VOTE_START_FACTOR = 0.5,   // need this many times number of users to start
