@@ -169,20 +169,21 @@ exports.vote = function(needed, afkThresh, voteThresh, prompt, timeout, firstUse
           chat.debug("messageHandler");
           // Wait for people to say 'yes'
           if (!(user in wantingToPlay) &&
-             (msg.match(/yes/i) ||
-              msg.match(/yep/i) ||
-              msg.match(/yeah/i) ||
+             (msg.match(/\byes\b/i) ||
+              msg.match(/\byep\b/i) ||
+              msg.match(/\byeah\b/i) ||
               msg.match(/I will/i) ||
               msg.match(/\bsi\b/i) ||
               msg.match(/totally/i) ||
               msg.match(/activate/i) ||
-              msg.match(/yse/i) ||
-              msg.match(/sey/i) ||
-              msg.match(/sye/i) ||
-              msg.match(/okay/i) ||
+              msg.match(/\byse\b/i) ||
+              msg.match(/\bsey\b/i) ||
+              msg.match(/\bsye\b/i) ||
+              msg.match(/\bokay\b/i) ||
               msg.match(/\bo[. ]*k\b/i) ||
               msg.match(/sure/i) ||
-              msg.match(/\bme\b/i) ||
+              //msg.match(/\bme\b/i) ||
+              msg.match(/pick me/i) ||
               msg.match(/why not/i) ||
               msg.match(/play/i) ||
               msg.match(/i.?m in/i))) {
