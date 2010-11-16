@@ -68,6 +68,8 @@ function compare(probe, gallery) {
       countDifferences(target.replace(/wantto/g,'wanna'), probe),
       countDifferences(target.replace(/gonna/g,'going to'), probe),
       countDifferences(target.replace(/goingto/g,'gonna'), probe),
+      countDifferences(target.replace(/out/g,'all'), probe),
+      countDifferences(target.replace(/all/g,'out'), probe),
       countDifferences(target.replace(/come/g,'can'), probe),
       countDifferences(target.replace(/can/g,'come'), probe),
       countDifferences(target.replace(/put/g,'pull'), probe),

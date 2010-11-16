@@ -235,11 +235,12 @@ IpsChat.prototype.getMessages = function() {
     .end();
 };
 
-IpsChat.prototype.say = function(msg, cb) {
-  // Send something to the chat room
+IpsChat.prototype.say = function(msg, cb, escape) {
+  // Send something to the chat room.
+  msg = (typeof 'esc' == 'undefined'? serializeMsg(msg) : escape? serializeMsg(msg) : msg);
   if (typeof cb == 'undefined') { cb = function(){}; }
   if (msg.length===0) { return cb(); }
-  var qstr = querystring.stringify({message: serializeMsg(msg), '_': ''});
+  var qstr = querystring.stringify({message: msg, '_': ''});
   this.get('post.php', {
         room: this.roomId,
         user: this.userId,

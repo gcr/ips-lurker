@@ -182,6 +182,7 @@ exports.init = function(chat) {
           chat.say("Danger? Hah! I laugh in the face of danger!");
         } else if (msg.match(/\blove/i) ||
                    msg.match(/\bhero/i) ||
+                   msg.match(/\bamo\b/i) || msg.match(/\bamor\b/i) ||
                    msg.match(/\blurv/i) ||
                    //(msg.match(/\bfavorite/i) && !(msg.match(/\?/))) ||
                    msg.match(/\bfriend/i) ||
