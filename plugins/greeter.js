@@ -47,6 +47,7 @@ exports.init = function(chat) {
             "Heeyyyyy",
             "hallo",
             "sup",
+            "YEEYEE it's "+usr,
             "howdy "+usr,
             "Ahhh, master "+usr+"! Good to see you.",
             "Good to see you, Master "+username+"!",

@@ -81,6 +81,9 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
                    // count on it
   this.userCount = 0; // kept in lockstep with above
 
+  this.waitingForMessage = false; // are we waiting to get message? (prevents us from overtaxing our powers)
+  // should help fight duplicate incoming messages
+
   this.settled = false; // this will be true when we've gotten some messages from the server
 }
 util.inherits(IpsChat, require('events').EventEmitter);
@@ -118,7 +121,7 @@ function eachMessage(messages, cb) {
 function unserializeMsg(msg) {
   // server sent us 'msg', so clean it up.
   return msg
-    .replace( '~~#~~', "," )
+    .replace( /~~#~~/g, "," )
 		.replace( /__N__/g, "\n" )
 		.replace( /__C__/g, "," )
 		.replace( /__E__/g, "=" )
@@ -149,6 +152,14 @@ IpsChat.prototype.getMessages = function() {
   // ask for (and handle) new messages from the server
   // includes our own messages
   var self = this;
+
+  if (this.waitingForMessage) { return; }
+  this.waitingForMessage = true;
+  // perhaps this can help us avoid duplicates.
+  // a better system would set the message poll timer upon receiving the
+  // response instead of either getting messages or missing this chance
+  // completely until the next interval
+
   this.get('get.php', {
         room: this.roomId,
         user: this.userId,
@@ -160,6 +171,8 @@ IpsChat.prototype.getMessages = function() {
         var body='';
         response.on('data', function(data ){body+=data;});
         response.on('end', function(){
+            self.waitingForMessage = false;
+
             // body is now a list of messages split by '~~||~~'
             var messages = body.toString().split('~~||~~');
 
@@ -237,7 +250,9 @@ IpsChat.prototype.getMessages = function() {
 
 IpsChat.prototype.say = function(msg, cb, escape) {
   // Send something to the chat room.
-  msg = (typeof 'esc' == 'undefined'? serializeMsg(msg) : escape? serializeMsg(msg) : msg);
+  msg = (typeof escape == 'undefined'? serializeMsg(msg)
+        : escape? serializeMsg(msg)
+        : msg);
   if (typeof cb == 'undefined') { cb = function(){}; }
   if (msg.length===0) { return cb(); }
   var qstr = querystring.stringify({message: msg, '_': ''});
