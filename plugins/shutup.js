@@ -23,14 +23,14 @@ var timeout = START_OUT, left = false, timer=null;
 exports.init = function(chat) {
 
   function restorePower() {
-    console.log("***** power restored!");
+    chat.debug("***** power restored!");
     clearTimeout(timer);
     left = false;
     pluginGlue.unlock();
-    console.log("   * Started talking again");
+    chat.debug("Started talking again");
   }
   function powerOff(username) {
-    console.log("   * Stopped talking");
+    chat.debug("Stopped talking");
     if (!pluginGlue.lock()) { return; } // !!!!! LOCK
         chat.say(randomChoice([
             username.toLowerCase()+": fine, sorry, I'll be quiet",
@@ -77,7 +77,8 @@ exports.init = function(chat) {
     // escape hatch
     chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; }
-      if (msg.match(/candy/i) && msg.match(/yam/i)) {
+      if ((msg.match(/candy/i) && msg.match(/yam/i)) ||
+          (msg.match(/from/i) && msg.match(/colorado/i))) {
             // seekrit codes
             restorePower();
             timeout *= CANDYYAM_FACTOR;
@@ -110,7 +111,7 @@ exports.init = function(chat) {
       if (!left) {
         timeout = Math.max(timeout * DECAY, START_OUT);
         if (timeout != START_OUT) {
-          console.log("*** decay now",timeout);
+          chat.debug("decay now "+timeout);
         }
       }
     }, DECAY_TIME*60*1000);

@@ -1,3 +1,4 @@
+/*jslint regexp: false */
 /* sometimes when writing plugins,
  * you need to ensure that they don't trample all over themselves.
  * for example, when you're writing a game, then when you go into 'game mode'
@@ -29,8 +30,9 @@ exports.randomSay = function(sayings) {
     // say the sayings each a second or so apart
     (function say() {
       if (saying.length) {
-        chat.say(saying.shift());
-        setTimeout(say, 1500+Math.random()*2000);
+        chat.say(saying.shift(), function(){
+          setTimeout(say, 1500+Math.random()*2000);
+        });
       }
     })();
   } else {
@@ -38,6 +40,20 @@ exports.randomSay = function(sayings) {
     chat.say(saying);
   }
 };
+
+function countNotAfk(threshhold) {
+  // count the users that typed things in the last threshhold minutes
+  var afk=0;
+  for (var usr in chat.users) {
+    if (chat.users.hasOwnProperty(usr)) {
+      if ((new Date() - chat.users[usr].lastActivity)/1000 < threshhold*60) {
+        afk++;
+      }
+    }
+  }
+  return afk;
+}
+exports.countNotAfk = countNotAfk;
 
 // now locking!
 //
@@ -58,7 +74,7 @@ var eventNames = "message user_enter user_exit settled".split(' '),
     saved = {},
     locked = false;
 exports.lock = function() {
-  if (locked) { console.log("******** already locked"); return false; }
+  if (locked) { chat.debug("******** already locked"); return false; }
   locked = true;
   ensureChat();
   // two pass.
@@ -68,7 +84,7 @@ exports.lock = function() {
   // for each event in saved[eventName]:
   //   remove it from chat
   // save handlers
-  console.log("*** LOCK");
+  chat.debug("*** LOCK");
   for (var en=0; en<eventNames.length; en++) {
     var eventName=eventNames[en];
     saved[eventName] = saved[eventName] || [];
@@ -91,12 +107,12 @@ exports.lock = function() {
 };
 
 exports.unlock = function() {
-  if (!locked) { console.log("***** already unlocked"); return false; }
+  if (!locked) { chat.debug("***** already unlocked"); return false; }
   locked = false;
   // very similar to above:
   // remove unprotected events
   // then restore from saved.
-  console.log("*** UNLOCK");
+  chat.debug("*** UNLOCK");
   for (var en=0; en<eventNames.length; en++) {
     var eventName=eventNames[en];
     saved[eventName] = saved[eventName] || [];
@@ -125,3 +141,64 @@ exports.lockProtect = function(fun) {
   return fun;
 };
 exports.locked = function(){ return locked; };
+
+
+// VOTING
+// This function allows you to play games based on voting.
+exports.vote = function(needed, afkThresh, voteThresh, prompt, timeout, firstUser, cb, noCb) {
+  // If we have less than voteThresh people, just run cb straight away
+  // Else, hold a vote by saying 'prompt' and run cb when we have 'needed' many voters.
+  // If we time out, run noCb() instead.
+  // Please pass in the first user (the one who triggered the vote) so we can
+  // count them also.
+  if (countNotAfk(afkThresh)<voteThresh) {
+    cb();
+  } else {
+    chat.say(prompt, function(){
+        var wantingToPlay = {};
+        wantingToPlay[firstUser] = true;
+        needed--;
+        var messageHandler;
+        var nobodyWantsToPlay = setTimeout(function() {
+            // nobody wanted to try
+            chat.removeListener('message', messageHandler);
+            noCb(needed);
+          }, timeout*1000);
+        messageHandler = function(msg, user, uid) {
+          if (!chat.settled || uid == chat.userId) { return; }
+          chat.debug("messageHandler");
+          // Wait for people to say 'yes'
+          if (!(user in wantingToPlay) &&
+             (msg.match(/\byes\b/i) ||
+              msg.match(/\byep\b/i) ||
+              msg.match(/\byeah\b/i) ||
+              msg.match(/I will/i) ||
+              msg.match(/\bsi\b/i) ||
+              msg.match(/totally/i) ||
+              msg.match(/activate/i) ||
+              msg.match(/\byse\b/i) ||
+              msg.match(/\bsey\b/i) ||
+              msg.match(/\bsye\b/i) ||
+              msg.match(/\bokay\b/i) ||
+              msg.match(/\bo[. ]*k\b/i) ||
+              msg.match(/sure/i) ||
+              //msg.match(/\bme\b/i) ||
+              msg.match(/pick me/i) ||
+              msg.match(/why not/i) ||
+              msg.match(/play/i) ||
+              msg.match(/i.?m in/i))) {
+            needed--;
+            wantingToPlay[user] = true;
+            chat.debug(wantingToPlay);
+            chat.debug("need "+needed+" more");
+          }
+          if (needed<=0) {
+            chat.removeListener('message', messageHandler);
+            clearTimeout(nobodyWantsToPlay);
+            cb();
+          }
+        };
+        chat.on('message', messageHandler);
+    });
+  }
+};

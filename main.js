@@ -1,3 +1,6 @@
+/*
+ * main.js -- run this file with node
+ */
 var child_process = require('child_process'),
     ipschat = require('./ipschat'),
     util = require('util'),

@@ -7,17 +7,21 @@ var randomSay = require('../../plugin_glue').randomSay,
 
 // for now, only track the winner a little
 var champion = null,
-    streak = 0;
+    streak = 0,
+
+    logData = []; // not sure what I'll do with this
+                  // maybe have [ { winner: user obj,
+                  //                time: time,
+                  //                others: chat.users }, ... ]
 
 try {
   var r = JSON.parse(fs.readFileSync(WINNERS_FILE).toString().trim());
-  champion = r.champion; streak = r.streak;
+  champion = r.champion||null; streak = r.streak; logData = r.logData||[];
 } catch(err) {
 }
-console.log(champion, streak);
 
-
-function won(chat, user, nusers) {
+function won(chat, user, nusers, sec, secPerLtr) {
+  logData.push({winner: user, sec: sec, time: new Date(), secPerLtr: secPerLtr, others: chat.users});
   if (user == champion) {
     // user won!
     streak++;
@@ -27,7 +31,7 @@ function won(chat, user, nusers) {
               "that's the second time "+user+" won!",
               "looks like "+user+" won again",
               user+" won again!!",
-              "of coruse, "+user+" takes the cake again"
+              "of course, "+user+" takes the cake again"
             ]);
             break;
         case 3:
@@ -48,9 +52,9 @@ function won(chat, user, nusers) {
               user.toUpperCase()+" IS INSANE. 4x win!",
               user+" wins again! 4x win!",
               "YOU COULD NOT STOP "+user.toUpperCase()+"!! 4x win!",
-              "As "+user+" downs another can of Jolt cola, '4x win!' blinks on their screen",
+              "As "+user+"'s jittery fingers come to a rest, everyone else stands in awe! 4x win!",
               user.toUpperCase()+" KNOWS THESE BY HEART. 4x win!",
-              "I must grudgingly admit a fourth victory for "+user
+              "I must grudgingly admit a fourth victory for "+user+" ;)"
             ]);
            break;
         case 5:
@@ -58,8 +62,8 @@ function won(chat, user, nusers) {
               user.toUpperCase()+" IS GODLIKE! 5x win!",
               "M-M-M-M-MONSTER STREAK!EAK!eak!k! "+user.toUpperCase()+" = 5 WINS",
               user+" is LIGHTS IN DISGUISE! 5x win!",
-              user+" is CHEATING! 5x win!",
-              user+" [i]insists[/i] on making a mockery of the hard work of others by winning for the fifth time",
+              user+" is totally CHEATING! ;) 5x win!",
+              user+" [i]insists[/i] on making a mockery of the hard work of others by winning for the fifth time !! ;)",
               user.toUpperCase()+" IS UNDEFEATED FIVE TIMES OVER.",
               user+"'s unerringly fast fingers pull through again for a fifth win",
               "Lights would be proud to see "+user+"'s fifth win!",
@@ -68,12 +72,12 @@ function won(chat, user, nusers) {
            break;
         default:
           randomSay([
-              "I am confident that "+user+" is ashamded of themself after winning "+streak+" times.",
+              "I am confident that "+user+" is ashamded of themself after winning "+streak+" times. ;)",
               "Hang on, I need to forward this log to Lights; "+user+" has a streak of "+streak+"!",
               user+"'s sweaty palms and jittery fingers have done it again! Streak: "+streak,
               "as should come as no surprise to anyone, "+user+" won "+streak+" times",
-              "it is my sad duty to declare another win for "+user+" ("+streak+" in a row)",
-              user+" is either cheating or is a hallucinating rabid LIGHTS fan with far too much time on their hands and unerringly fast fingers. Streak: "+streak,
+              "it is my duty to declare another win for "+user+" ("+streak+" in a row)",
+              user+" is clearly a rabid LIGHTS fan with far too much time on their hands and unerringly fast fingers. Streak: "+streak,
               user.toUpperCase()+" HAS A WINNING STREAK OF "+streak,
               user+" has a streak of "+streak+"!",
               user.toUpperCase()+" HELD THEIR STREAK OF "+streak,
@@ -128,12 +132,12 @@ function won(chat, user, nusers) {
     streak = 1;
     champion = user;
   }
-  fs.writeFile(WINNERS_FILE, JSON.stringify({champion: champion, streak: streak}));
+  fs.writeFile(WINNERS_FILE, JSON.stringify({champion: champion, streak: streak, logData: logData}));
 }
 
 function announce(chat, nusers) {
   // announce the beginning of the chat
-  console.log(champion, streak, nusers);
+  chat.debug("Winners: ", champion, streak, nusers);
   if (champion !== null) {
     switch(streak) {
         case 0:
@@ -183,6 +187,9 @@ function announce(chat, nusers) {
     }
   }
 }
+
+exports.champion = function() { return champion; };
+exports.streak = function() { return streak; };
 
 exports.won = won;
 exports.announce = announce;

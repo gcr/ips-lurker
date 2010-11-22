@@ -138,9 +138,11 @@ function countDifferences(a, b) {
   var df = diff(a,b),
       differences = 0;
   // shave off optional stuff on the front
+  /*
   if (!df[0].common && df[0].a.length === 0 && df[0].b.length) {
     df.shift();
   }
+  */
   for (var i=0,l=df.length; i<l; i++) {
     if (!df[i].common) {
       differences += Math.max(df[i].a.length, df[i].b.length);
@@ -150,3 +152,11 @@ function countDifferences(a, b) {
 }
 
 exports.countDifferences = countDifferences;
+exports.diff = diff;
+
+// this breaks SPECTACULARLY
+console.log(diff("itmustjutsbestressbutilikelyshouldntbehere",
+                 "itmustjustbestressbutilikelyshouldntbehere"));
+
+// this one too. expects 5, got 7
+//console.log(diff("livelovelights", "livelovekyla"));

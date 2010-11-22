@@ -38,11 +38,18 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
    *    unknown_msg (arguments)
    *        we did not understand the message the server sent us (for low-level
    *        debug)
+   *    system_message (msg)
+   *        called when the server sends us a system message
    *    error (firstMessage)
    *        the server kicked us or something.
    *    settled
    *        the server will send us previous few messages when we first join the
    *        channel. This event will appear when we've gotten the first batch.
+   *    debug (msg)
+   *        the chat object will not send this event by itself. instead, various
+   *        plugins can call chat.debug("foo"). this is a convenience so that we
+   *        don't have to always use console.log() everywhere and mess up
+   *        stdout, etc. if we ever make a text-based chat client
    */
   var self = this;
   this.ipsconnect = ipsconnect;
@@ -73,6 +80,9 @@ function IpsChat(ipsconnect, accessKey, serverHost, serverPath, roomId, userName
                    // note that forumId and group may not be present, so do not
                    // count on it
   this.userCount = 0; // kept in lockstep with above
+
+  this.waitingForMessage = false; // are we waiting to get message? (prevents us from overtaxing our powers)
+  // should help fight duplicate incoming messages
 
   this.settled = false; // this will be true when we've gotten some messages from the server
 }
@@ -111,7 +121,7 @@ function eachMessage(messages, cb) {
 function unserializeMsg(msg) {
   // server sent us 'msg', so clean it up.
   return msg
-    .replace( '~~#~~', "," )
+    .replace( /~~#~~/g, "," )
 		.replace( /__N__/g, "\n" )
 		.replace( /__C__/g, "," )
 		.replace( /__E__/g, "=" )
@@ -142,6 +152,14 @@ IpsChat.prototype.getMessages = function() {
   // ask for (and handle) new messages from the server
   // includes our own messages
   var self = this;
+
+  if (this.waitingForMessage) { return; }
+  this.waitingForMessage = true;
+  // perhaps this can help us avoid duplicates.
+  // a better system would set the message poll timer upon receiving the
+  // response instead of either getting messages or missing this chance
+  // completely until the next interval
+
   this.get('get.php', {
         room: this.roomId,
         user: this.userId,
@@ -153,6 +171,8 @@ IpsChat.prototype.getMessages = function() {
         var body='';
         response.on('data', function(data ){body+=data;});
         response.on('end', function(){
+            self.waitingForMessage = false;
+
             // body is now a list of messages split by '~~||~~'
             var messages = body.toString().split('~~||~~');
 
@@ -162,7 +182,7 @@ IpsChat.prototype.getMessages = function() {
               // onoes it all borked
               // we have no clue what this means but we'll handle it anyway
               self.emit('error', firstMessage);
-              console.log('error', firstMessage);
+              self.debug('error', firstMessage);
               clearInterval(self.pingTimer);
               clearInterval(self.getMessagesTimer);
               return false;
@@ -201,9 +221,8 @@ IpsChat.prototype.getMessages = function() {
 
                   case '4':
                     // a system message (treat it as a normal message for now)
-                    //return arguments.callee(timestamp, '1', "***system***", msg, details, userId);
-                    console.log("*** SYSTEM MESSAGE: "+msg);
-                    return; // ignore for now (causes ***system*** users to be noticed)
+                    self.systemMessage(msg);
+                    return;
 
                   case '5':
                     // somebody got kicked
@@ -213,7 +232,7 @@ IpsChat.prototype.getMessages = function() {
 
                   default:
                     self.emit('unknown_msg', arguments);
-                    console.log(arguments);
+                    self.debug("unknown message", arguments);
                       // code
                 }
               });
@@ -229,11 +248,14 @@ IpsChat.prototype.getMessages = function() {
     .end();
 };
 
-IpsChat.prototype.say = function(msg, cb) {
-  // Send something to the chat room
+IpsChat.prototype.say = function(msg, cb, escape) {
+  // Send something to the chat room.
+  msg = (typeof escape == 'undefined'? serializeMsg(msg)
+        : escape? serializeMsg(msg)
+        : msg);
   if (typeof cb == 'undefined') { cb = function(){}; }
   if (msg.length===0) { return cb(); }
-  var qstr = querystring.stringify({message: serializeMsg(msg), '_': ''});
+  var qstr = querystring.stringify({message: msg, '_': ''});
   this.get('post.php', {
         room: this.roomId,
         user: this.userId,
@@ -295,6 +317,9 @@ IpsChat.prototype.userExit = function(uname, uid, timestamp) {
   }
   this.emit('user_exit', uname, uid, timestamp);
 };
+IpsChat.prototype.systemMessage = function(msg) {
+  this.emit('system_message', msg);
+};
 
 IpsChat.prototype.boardGet = function(newquery) {
   // this sends a message to the *message board*, not the chat server.
@@ -322,6 +347,11 @@ IpsChat.prototype.get = function(path, query, headers, method) {
     .request(method||'GET', this.serverPath+path+'?'+
         querystring.stringify(query),
         head);
+};
+
+IpsChat.prototype.debug = function(msg) {
+  // send the debug event for logging plugins
+  this.emit('debug', msg);
 };
 
 

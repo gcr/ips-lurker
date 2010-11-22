@@ -19,8 +19,8 @@ exports.init = function(chat) {
     });
 
     twit.on('tweet', function(tweet) {
-        console.log("    * @"+tweet.user.screen_name+": " + tweet.text);
         if (twit.following.indexOf(tweet.user.id) != -1) {
+          chat.debug("@"+tweet.user.screen_name+": " + tweet.text);
           chat.say(randomChoice([
                 "beep beep! the twitters say ",
                 "coming through! the twitters say ",
@@ -60,13 +60,21 @@ exports.init = function(chat) {
           // which confuses the client, hence the extra space.        ^
           // lame I know
         }
-      })
-      .on('end', function(resp) {
+      });
+      var timeout = 5;
+      twit.on('end', function(resp) {
         //chat.say("lost satellite uplink (tell blanky please)");
-        console.log("\n\n\n** WARNING lost sattelite uplink",new Date(), "\n\n");
-        setTimeout(function() { twit.stream(); }, 10000);
-      })
-      .stream();
+        if (timeout > 0) {
+          chat.debug("Twitter: WARNING lost sattelite uplink",new Date());
+          setTimeout(function() { twit.stream(); }, 60*1000);
+          timeout--;
+          setTimeout(function() { timeout++; }, 600*1000);
+        } else {
+          chat.debug("Twitter: ERROR no more twitter! try again in an hour",new Date());
+          setTimeout(function() { timeout=5; twit.stream(); }, 60*60*1000);
+        }
+      });
+      twit.stream();
 
       // twitter matching:
       // fetch user information when someone says @user in the chat.
@@ -80,12 +88,13 @@ exports.init = function(chat) {
             res.on('data',function(data){body+=data;})
                .on('end', function(end) {
                  var user = JSON.parse(body.toString().trim());
+                 chat.debug(require('util').inspect(user));
                  if (!(user.error)) {
                    chat.say(sender+":"+
                      ' [b]@'+uname+'[/b]'+
                      ' [url="http://twitter.com/'+uname+'"](follow)[/url]'+
                      " is "+user.name+" with "+user.followers_count+" followers, "+user.statuses_count+" tweets."+
-                     (user.status? ' Latest: "'+user.status.text+'"' : " Looks like a sneaksy private account.")
+                     (user.status? ' Latest: "'+user.status.text+' "' : " Looks like a sneaksy private account.")
                    );
                  }
               });
