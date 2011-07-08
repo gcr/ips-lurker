@@ -23,6 +23,7 @@ exports.init = function(chat) {
 
       // look for youtubely URLs
       var yturl = msg.match(/[w.]*youtube\.com\/watch\?v=([a-zA-Z0-9\-_]+)/);
+      yturl = yturl || msg.match(/[w.]*youtu\.be\/([a-zA-Z0-9\-_]+)/);
       if (yturl) {
         // request json from youtube
         // http://gdata.youtube.com/feeds/api/videos/6iVGnaBpBu4?&v=2&alt=jsonc
