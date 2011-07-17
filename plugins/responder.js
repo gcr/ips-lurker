@@ -19,6 +19,10 @@ exports.init = function(chat) {
            msg.match(/compare/i) || 
           (msg.match(/guess/i) && msg.match(/lyric/i))) { return; } // TODO fix properly!
 
+      if (msg.match(/what('s| is)/i)) { // vim: '{
+        return;
+      }
+
       var usr = username.toLowerCase();
 
       if (Math.random()<0.5 && !recentBye && (
@@ -269,7 +273,8 @@ exports.init = function(chat) {
                 "in Canada, like all good things",
                 "where you least expect it ;)"
               ]);
-        } else if (msg.match(/what.*\?/i) && !msg.match(/\bup\b/)) {
+          }
+          /*
           randomSay([
               "I dunno but it sure had better be good",
               "why, it's merely "+randomChoice([
@@ -284,8 +289,8 @@ exports.init = function(chat) {
               "dude, your guess is as good as mine",
               "haven't the foggiest",
               "8-ball says: 'Wait and see!'"
-            ]);
-        } else if (msg.match(/smoothie|milkshake|sandwich|drink|coffee|popcorn|\btea\b|waffle|latte|beef jerky|jerky|chicken|cookies|burger|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)) {
+            ]);*/
+        else if (msg.match(/smoothie|milkshake|sandwich|drink|coffee|popcorn|\btea\b|waffle|latte|beef jerky|jerky|chicken|cookies|burger|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)) {
           var food = msg.match(/smoothie|milkshake|sandwich|drink|coffee|popcorn|\btea\b|waffle|latte|beef jerky|jerky|chicken|cookies|burger|oreo|fried \w*|twinkie|pizza|turkish delight|coke|cake/i)[0];
           randomSay([
               "one "+food+" coming right up...",
