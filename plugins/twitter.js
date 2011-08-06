@@ -1,6 +1,6 @@
 var http=require('http'),
     fs=require('fs'),
-    twitter=require('./twitter-node/lib/twitter-node/index.js');
+    twitter=require('twitter-node');
 
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];

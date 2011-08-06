@@ -3,3 +3,4 @@ passwd
 *.sw*
 #plugins/hangman/winners.json
 #plugins/hangman/recent.json
+/node_modules

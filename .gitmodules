@@ -1,3 +1,0 @@
-[submodule "plugins/twitter/twitter-node"]
-	path = plugins/twitter/twitter-node
-	url = git://github.com/technoweenie/twitter-node.git
