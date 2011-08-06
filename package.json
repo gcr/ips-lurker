@@ -1,0 +1,17 @@
+{
+  "author": "gcr <gcr@sneakygcr.net> (http://sneakygcr.net)",
+  "name": "ips-chat",
+  "description": "IPS chat module for nodejs",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gcr/ips-lurker.git"
+  },
+  "engines": {
+    "node": ">=0.4.0"
+  },
+  "dependencies": {
+    "twitter-node": "~0.0"
+  },
+  "devDependencies": {}
+}
