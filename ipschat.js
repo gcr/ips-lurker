@@ -276,7 +276,7 @@ IpsChat.prototype.leave = function(cb) {
         app: 'ipchat',
         module: 'ipschat',
         section: 'chat',
-        'do': 'leave', 
+        'do': 'leave',
         room: this.roomId,
         user: this.userId,
         access_key: this.accessKey,
@@ -372,7 +372,7 @@ function ipsChatLogin(ipsconnect, cb) {
               serverHostR = /var\s*serverHost\s*=\s*'(.*)'/,
               serverPathR = /var\s*serverPath\s*=\s*'(.*)'/,
               roomIdR = /var\s*roomId\s*=\s*([0-9]*)/,
-              userNameR = /var\s*userName\s*=\s*'(.*)'/, 
+              userNameR = /var\s*userName\s*=\s*'(.*)'/,
               userIdR = /var\s*userId\s*=\s*([0-9]*)/,
               secureHashR = /ipb.vars\['secure_hash'\]\s*=\s*'([a-zA-Z0-9]*)'/,
               baseUrlR = /ipb.vars\['base_url'\]\s*=\s*'(.*)'/;

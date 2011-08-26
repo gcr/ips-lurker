@@ -106,9 +106,16 @@ exports.init = function(chat) {
           if (senderId==chat.userId || !chat.settled) { return; }
 
           var match = /\B@([a-zA-Z0-9_]+)/g.exec(msg);
+
+          var blacklist = {};
+          for (var k in chat.users) {
+              if (chat.users.hasOwnProperty(k)) {
+                blacklist[chat.users[k].name.split(" ")[0].toLowerCase()] = true;
+              }
+          }
           if (match && msg.indexOf('@lurker') == -1) {
             var uname = match[1];
-            if (uname.length > 2) {
+            if (uname.length > 2 && !(uname.toLowerCase() in blacklist)) {
               // ask for the twitters
               twitterGetInfo(uname, sendername);
             }
