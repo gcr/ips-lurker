@@ -11,7 +11,8 @@
     "node": ">=0.4.0"
   },
   "dependencies": {
-    "twitter-node": "~0.0"
+    "twitter-node": "~0.0",
+    "apricot": "~0.0.5"
   },
   "devDependencies": {}
 }
