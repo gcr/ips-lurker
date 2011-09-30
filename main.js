@@ -24,7 +24,7 @@ ips.ipsLogin('http://board.iamlights.com/', login.user, login.pass,
     // Once we log in, join the chat.
     ipschat.ipsChatLogin(ipsconnect, function(error, chat) {
       pluginGlue.assignChat(chat);
-      if(error) { return console.log(error); }
+      if(error) { return console.log(error.stack); }
       console.log("* Joined! Loading plugins...");
       // Once we join the chat, load plugins.
       var files = fs.readdirSync(PLUGIN_DIR);
