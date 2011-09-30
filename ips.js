@@ -2,6 +2,7 @@ var http = require('http'),
     url = require('url'),
     util = require('util'),
     ips = require('./ips'),
+    apricot = require('apricot').Apricot,
     querystring = require('querystring');
 
 function parseCookies(cookies){
@@ -30,7 +31,43 @@ function unparseCookies(cookies) {
   return result.join('; ');
 }
 
-
+function get_initial_login_auth_key(boardUrl, cb) {
+  // Gets cb with either cb(error) or cb(False, access_key)
+  var u = url.parse(boardUrl),
+  request = http
+    .createClient(u.port||80, u.hostname)
+    .request('GET', '/index.php?' +
+             querystring.stringify(
+               { app: 'core',
+                 module: 'global',
+                 section: 'login'
+                 // 'do': 'process',
+                 // username: user, // yuck! i know
+                 // password: pass
+               }),
+             {'host': u.hostname});
+  request.on('response',
+             function (response) {
+               var data="";
+               response.on('data', function(d){data+=d;});
+               response.on('end',
+                 function(){
+                   apricot.parse(data,
+                     function(error, dom) {
+                       if (error) {
+                         return cb(error);
+                       }
+                       var key_elem = dom.find("input[name=auth_key]").matches[0];
+                       if (!key_elem) {
+                         return cb(new Error("Is the board down?"));
+                       }
+                       console.log(key_elem.outerHTML);
+                       cb(false, key_elem.value);
+                     });
+                 });
+             });
+  request.end();
+}
 
 function ipsLogin(boardUrl, user, pass, cb) {
   // Logs in to an IPS forum.
@@ -39,48 +76,55 @@ function ipsLogin(boardUrl, user, pass, cb) {
   // fun('/index.php', {query},{headers}); and it will return a http.clientRequest
   //
   // WARNING TODO FIXME HACK XXX this sends user and password in the clear!
-
-  var u = url.parse(boardUrl),
+  get_initial_login_auth_key(
+    boardUrl,
+    function(error,auth_key) {
+      if (error) {
+        return cb(error);
+      }
+      var u = url.parse(boardUrl),
       request = http
         .createClient(u.port||80, u.hostname)
-        .request('GET', '/index.php?' +
-          querystring.stringify({
-              app: 'core',
-              module: 'global',
-              section: 'login',
-              'do': 'process',
-              username: user, // yuck! i know
-              password: pass
-            }),
-          {'host': u.hostname});
-    request.on('response', function (response) {
-        var cookies = parseCookies(response.headers['set-cookie']);
-        //var data="";
-        //response.on('data', function(d){data+=d;});
-        //response.on('end', function(){console.log(data);});
-        if (!('pass_hash' in cookies)) {
-          cb(new Error("Username/password incorrect."));
-        } else {
-          cb(false, function(path, query, heads) {
-              // This function returns an http.clientRequest with authenticated
-              // cookies. Specify a path, query string, and extra headers.
-              var headers = {'Cookie': unparseCookies(cookies),
-                             'host': u.hostname};
-              if (heads) {
-                for (var k in heads) {
-                  if (heads.hasOwnProperty(k)) {
-                    headers[k] = heads[k];
-                  }
-                }
-              }
-              return http
-                .createClient(u.port||80,u.hostname)
-                .request('GET', path+'?'+
-                    querystring.stringify(query), headers);
-              });
-        }
+        .request('POST', '/index.php?' +
+                 querystring.stringify(
+                   {app: 'core',
+                    module: 'global',
+                    section: 'login',
+                    'do': 'process',
+                    ips_username: user, // yuck! i know
+                    ips_password: pass,
+                    auth_key: auth_key
+                   }),
+                 {'host': u.hostname});
+      request.on('response',
+        function(response) {
+          var cookies = parseCookies(response.headers['set-cookie']);
+          var data="";
+          if (!('pass_hash' in cookies)) {
+            cb(new Error("Username/password incorrect."));
+          } else {
+            cb(false, function(path, query, heads) {
+                 // This function returns an http.clientRequest with authenticated
+                 // cookies. Specify a path, query string, and extra headers.
+                 var headers = {'Cookie': unparseCookies(cookies),
+                                'host': u.hostname};
+                 if (heads) {
+                   for (var k in heads) {
+                     if (heads.hasOwnProperty(k)) {
+                       headers[k] = heads[k];
+                     }
+                   }
+                 }
+                 return http
+                   .createClient(u.port||80,u.hostname)
+                   .request('GET', path+'?'+
+                            querystring.stringify(query), headers);
+             });
+          }
+        });
+      request.end();
     });
-    request.end();
 }
+
 
 exports.ipsLogin = ipsLogin;

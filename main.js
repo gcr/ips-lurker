@@ -19,7 +19,7 @@ console.log("* Logging in "+login.user);
 // Once we start up, log in to the forum.
 ips.ipsLogin('http://board.iamlights.com/', login.user, login.pass,
   function(error, ipsconnect) {
-    if (error) { return console.log(error); }
+    if (error) { return console.log(error.stack); }
     console.log("* Joining chat...");
     // Once we log in, join the chat.
     ipschat.ipsChatLogin(ipsconnect, function(error, chat) {
