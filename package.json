@@ -3,7 +3,7 @@
   "name": "ips-chat",
   "main": "lib/index.js",
   "description": "IPS chat module for nodejs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/gcr/ips-lurker.git"
