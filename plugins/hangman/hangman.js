@@ -1,7 +1,7 @@
 /*jslint regexp: false */
 var Game = require('./game').Game,
     compare = require('./game').compare,
-    pluginGlue = require('../../plugin_glue'),
+    pluginGlue = require('../../lib/plugin_glue'),
     countNotAfk = pluginGlue.countNotAfk,
     randomSay = pluginGlue.randomSay,
     lyricPicker = require('./lyric_picker'),

@@ -6,7 +6,7 @@
 
 var http = require('http'),
     querystring = require('querystring'),
-    randomSay = require('../plugin_glue').randomSay;
+    randomSay = require('../lib/plugin_glue').randomSay;
 
 
 function duckDuckGoQuery(query, cb) {

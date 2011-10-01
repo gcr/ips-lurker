@@ -1,7 +1,7 @@
 /*
  * keeps track of the winner
  */
-var randomSay = require('../../plugin_glue').randomSay,
+var randomSay = require('../../lib/plugin_glue').randomSay,
     fs = require('fs'),
     WINNERS_FILE='plugins/hangman/winners.json';
 

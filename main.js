@@ -2,12 +2,12 @@
  * main.js -- run this file with node
  */
 var child_process = require('child_process'),
-    ipschat = require('./ipschat'),
+    ipschat = require('./lib/ipschat'),
     util = require('util'),
     fs = require('fs'),
-    pluginGlue = require('./plugin_glue'),
+    pluginGlue = require('./lib/plugin_glue'),
     path = require('path'),
-    ips = require('./ips'),
+    ips = require('./lib/ips'),
 
     PLUGIN_DIR="plugins";
 

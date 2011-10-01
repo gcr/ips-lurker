@@ -1,7 +1,7 @@
 /*
  * logger.js - logging to console
  */
-var lockProtect = require('../plugin_glue').lockProtect;
+var lockProtect = require('../lib/plugin_glue').lockProtect;
 
 // colored output! :3
 function color(col) {

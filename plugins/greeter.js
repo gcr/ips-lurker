@@ -3,7 +3,7 @@
  *
  * we'll greet new people and sometimes mourn those who leave
  */
-var randomSay = require('../plugin_glue').randomSay;
+var randomSay = require('../lib/plugin_glue').randomSay;
 
 function randomChoice(arr) {
   return arr[Math.floor(Math.random()*arr.length)];

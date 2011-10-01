@@ -3,7 +3,7 @@
  * shutup.js -- goes away when people say so
  */
 
-var pluginGlue = require('../plugin_glue'),
+var pluginGlue = require('../lib/plugin_glue'),
     randomSay = pluginGlue.randomSay,
 
 // tweak me

@@ -1,6 +1,7 @@
 {
   "author": "gcr <gcr@sneakygcr.net> (http://sneakygcr.net)",
   "name": "ips-chat",
+  "main": "lib/index.js",
   "description": "IPS chat module for nodejs",
   "version": "0.0.0",
   "repository": {
