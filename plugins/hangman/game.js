@@ -78,6 +78,8 @@ function compare(probe, gallery) {
       countDifferences(target.replace(/fight/g,'find'), probe),
       countDifferences(target.replace(/crimson/g,'silver'), probe),
       countDifferences(target.replace(/silver/g,'crimson'), probe),
+      countDifferences(target.replace(/when/g,'where'), probe),
+      countDifferences(target.replace(/where/g,'when'), probe),
       countDifferences(target.replace(/and/g,''), probe),
       countDifferences("and"+target, probe)
   );
