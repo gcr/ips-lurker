@@ -44,7 +44,7 @@ exports.init = function(chat ) {
         chat.say(g.toString());
       });
     g.on('timeout', function() {
-        chat.say("The answer was '"+g.target+"'");
+           chat.say("The answer was '"+g.target+"' from "+lyricPicker.songName(g.target));
       });
     g.on('stop', function() { chat.debug("game stopped"); endGame(); });
 
@@ -60,7 +60,7 @@ exports.init = function(chat ) {
                 "This time, "+usr+" won!",
                 "GOOD JOB "+usrUp
               ])+
-            " The answer was '"+target+"' You got it in "+sec+" sec! (that's "+secPerLtr+" sec/letter)");
+                   " The answer was '"+target+"' from "+lyricPicker.songName(g.target)+"!");
           g.stop();
           winner.won(chat, usr, countNotAfk(AFK_THRESHHOLD), sec, secPerLtr);
         }
@@ -135,15 +135,15 @@ exports.init = function(chat ) {
                   endGame();
                 });
           });
-        
+
       }
     });
 
-
+  
   // debug
   chat.on('message', function(msg, usr, uid) {
       if (uid == chat.userId || !chat.settled) { return; }
-      
+
       var match = msg.match(/'.*?'/g) || msg.match(/".*?"/g);
       if (msg.match(/compare/i) && match && match.length >= 2) {
         chat.say(usr+", "+match[0]+" and "+match[1]+" are "+

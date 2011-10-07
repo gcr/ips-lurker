@@ -155,8 +155,8 @@ exports.countDifferences = countDifferences;
 exports.diff = diff;
 
 // this breaks SPECTACULARLY
-console.log(diff("itmustjutsbestressbutilikelyshouldntbehere",
-                 "itmustjustbestressbutilikelyshouldntbehere"));
+// console.log(diff("itmustjutsbestressbutilikelyshouldntbehere",
+//                  "itmustjustbestressbutilikelyshouldntbehere"));
 
 // this one too. expects 5, got 7
-//console.log(diff("livelovelights", "livelovekyla"));
+// console.log(diff("livelovelights", "livelovekyla"));
