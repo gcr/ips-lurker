@@ -10,13 +10,14 @@ How to run
 Run lurker like this:
 
     git clone git://github.com/gcr/ips-lurker.git; cd ips-lurker
+    npm install
     git submodule init
     git submodule update
     echo '{"user": "YOUR FORUM USERNAME", "pass": "YOUR FORUM PASS"}' > passwd
     node main.js
 
-lurker requires node at least version 0.3.0. 0.2.x would work but it has a bug
-involving multiple cookies.
+lurker requires npm and node at least version 0.3.0. 0.2.x would work but it
+has a bug involving multiple cookies.
 
 What's inside
 -------------
