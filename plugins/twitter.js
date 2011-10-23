@@ -1,3 +1,9 @@
+/*
+ *
+ * This plugin no longer works. A problem with twitter-node prevents it from
+ * logging in because twitter enforces HTTPS logins now. Sorry.
+ *
+ *
 var http=require('http'),
     fs=require('fs'),
     twitter=require('twitter-node');
@@ -123,3 +129,4 @@ exports.init = function(chat) {
         });
 
 };
+*/
