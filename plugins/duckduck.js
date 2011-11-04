@@ -59,15 +59,19 @@ exports.init = function(chat) {
           if (query) {
             var q = query[3];
             if (q.length) {
-              duckDuckGoQuery(q, function(text) {
-                  if (text) {
-                    chat.say(text);
-                  } else {
-                    randomSay([
-                        "no clue", "not sure", "magic 8-ball says: OUTCOME UNCERTAIN",
-                        "haven't the foggiest", "dunno", "your guess is as good as mine"]);
-                  }
-                });
+              if (q.match(/coitus/) || q.match(/sex/)) {
+                chat.say("It's what you wish you were having, "+usr+"!");
+              } else {
+                duckDuckGoQuery(q, function(text) {
+                    if (text) {
+                      chat.say(text);
+                    } else {
+                      randomSay([
+                          "no clue", "not sure", "magic 8-ball says: OUTCOME UNCERTAIN",
+                          "haven't the foggiest", "dunno", "your guess is as good as mine"]);
+                    }
+                  });
+              }
             }
           }
         }
