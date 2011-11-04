@@ -87,7 +87,7 @@ exports.init = function(chat) {
             "thank goodness you're safe, "+usr+", I thought the bears got you!",
             "careful "+usr+", I saw bears around here earlier",
             "are you a yeti, "+usr+"?",
-            "uh oh, sherrif's in town!",
+            "uh oh, sheriff's in town!",
             "POKEMANS! let me show you them, "+usr+"!!!1",
             "howdy, sherriff!",
             "Why hello!",
