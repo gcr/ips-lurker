@@ -59,7 +59,7 @@ exports.init = function(chat) {
           if (query) {
             var q = query[3];
             if (q.length) {
-              if (q.match(/coitus/) || q.match(/sex/)) {
+              if (q.match(/coitus/i) || q.match(/sex/i)) {
                 chat.say("It's what you wish you were having, "+usr+"!");
               } else {
                 duckDuckGoQuery(q, function(text) {
