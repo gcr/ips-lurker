@@ -38,7 +38,7 @@ ips.ipsLogin('http://board.iamlights.com/', login.user, login.pass,
           plugin = require('./'+PLUGIN_DIR+'/'+path.basename(files[i],'.js'));
         } else if (
             fs.statSync('./'+PLUGIN_DIR+'/'+files[i]).isDirectory() &&
-            path.existsSync(['.',PLUGIN_DIR,files[i],files[i]+'.js'].join('/'))) {
+            fs.existsSync(['.',PLUGIN_DIR,files[i],files[i]+'.js'].join('/'))) {
           console.log("   - " + files[i] + "...");
           plugin = require(['.',PLUGIN_DIR,files[i],files[i]].join('/'));
         }
