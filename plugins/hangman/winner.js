@@ -14,7 +14,7 @@ var champion = null,
                   //                time: time,
                   //                others: chat.users }, ... ]
 
-var r = { champion: null, streak: 0; logData: [] };
+var r = { champion: null, streak: 0, logData: [] };
 
 try {
   r = JSON.parse(fs.readFileSync(WINNERS_FILE).toString().trim());
