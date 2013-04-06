@@ -3,3 +3,5 @@ passwd
 lurkerlog
 /clientlog.imstyle
 /node_modules
+plugins/hangman/recent.json
+plugins/hangman/winners.json
