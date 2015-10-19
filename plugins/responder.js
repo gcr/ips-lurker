@@ -16,7 +16,7 @@ exports.init = function(chat) {
   chat.on('message', function(msg, username, uid) {
       if (uid == chat.userId || !chat.settled) { return; } // ignore self
       if ((msg.match(/hang/i) && msg.match(/man/i)) ||
-           msg.match(/compare/i) || 
+           msg.match(/compare/i) ||
           (msg.match(/guess/i) && msg.match(/lyric/i))) { return; } // TODO fix properly!
 
       if (msg.match(/what('s| is)/i)) { // vim: '{
@@ -169,7 +169,7 @@ exports.init = function(chat) {
               //[ "you know what, "+usr+"?","I take up less bandwidth than you!", "so there!"], // mean
               "if Knuth had made me, maybe I wouldn't be so stupid, "+usr,
               [ "derp!", "DERP DERP", "derpppp!", "sorry I'll stop" ],
-              [ "if Lights had coded me she would have done better" ], 
+              [ "if Lights had coded me she would have done better" ],
               "cleverbot gets all the AI research! why do I have to be so stupid",
               "hey, being a bot's tough",
               [ "I was a great programming exercise", "probably the only exercise my creator ever got, heh"],
@@ -224,7 +224,7 @@ exports.init = function(chat) {
             ]);
         } else if (msg.match(/why.*\?/i)) {
           randomSay([
-              ["I guess she wasn't feeling well", "don't take it too hard"], 
+              ["I guess she wasn't feeling well", "don't take it too hard"],
               "why? I dunno... maybe it's because 641 is a prime number",
               "because it's my favorite",
               [ "because the laws of quantum chronodynamics say so", "(no I don't understand them either)"],
@@ -329,7 +329,7 @@ exports.init = function(chat) {
                 "boop bonk!",
                 "bloopsaphone!",
                 "I wish I could play an autoharp",
-                [ "only "+((new Date(new Date().getFullYear(), 11, 25)-Date.now())/1000/60/60/24)+" days until Christmas!", "jingle bells!"], 
+                [ "only "+((new Date(new Date().getFullYear(), 11, 25)-Date.now())/1000/60/60/24)+" days until Christmas!", "jingle bells!"],
                 [ "hey guys!", "christmas is soon!"],
                 [ "huh?", "whaaa?"],
                 [ "uh", "i dunno "+usr, "i'm just a bot"],
